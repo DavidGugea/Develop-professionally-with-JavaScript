@@ -116,3 +116,126 @@ function add(x, y, config){
 add(2, 2);
 add(2, 2, {log : true});
 ```
+
+### Standard Methods for JavaScript Functions
+
+In JavaScript, as we said before the keyword ```this``` represents the context that a function is bound to.
+All JavaScript functions have some standard functions. This functions are:
+
+- bind
+- call
+- apply
+
+#### bind
+
+With bind, as well as with the other standard methods, we can change the context of the keyword ```this``` and get that function in return. Example:
+
+```JavaScript
+const button = {
+    handler : null,
+    onClick : function(handler){
+        // handler is a callback-handler
+        this.handler = handler;
+    },
+    click : function(){
+        this.handler();
+    }
+}
+
+const handler = {
+    log : function(){
+        console.log("Clicked on the button.");
+    },
+    handle : function(){
+        this.log();
+    }
+}
+
+// button.onClick(handler.handle); Wrong, since this points to button, not to handler
+button.onClick(handler.handle.bind(handler));
+button.click();
+```
+
+In this example you can see that if we choose to use ```button.onClick(handler.handle)``` we will get an error because we use ```this.log()``` inside the ```handler.handle``` function, but we use the ```handler.handle``` function inside another context. The context is not ```handler```, the context is ```button``` and since ```button``` doesn't have a function called ```log``` we will get an error. However, if we use the ```bind``` keyword, we can change the reference of ```this``` inside the when we pass ```handler.handle``` function inside the ```button.onClick``` function and we can change it to be ```handler``` since we have the function ```handler.log``` there, so we won't get an error and everything will work the way we want it to.
+
+If we want to pass arguments with ```bind``` we can do it by inserting them as rest arguments:
+
+```JavaScript
+function.bind(thisArg)
+function.bind(thisArg, arg1)
+function.bind(thisArg, arg1, arg2)
+function.bind(thisArg, arg1, ... , argN)
+```
+
+Bind doens't execute the function, it just returns a new function back with the given context. 
+
+#### call
+
+Call, just like bind, changes the context, the function is bound to. That means that, as well as bind, it changes the meaning of the ```this``` keyword. Unlike ```bind```, call executes the function directly without giving you back a new function with a changed context. Example:
+
+Let's say that you want to have a function that prints all the names it is given ( using the ```arguments``` property that every function has ).
+
+```JavaScript
+function printNames(){
+    console.log(arguments);
+
+    arguments.forEach((argument) => {
+        console.log(argument);
+    });
+}
+```
+
+This will result into an error since the keyword ```arguments``` doesn't fully inherit all the methods of a list.
+We can, however, take the ```forEach``` method from the ```Array.prototype``` and apply it to our list of arguments. **This is also known as Method Borrowing**.
+
+```JavaScript
+function printNames(){
+    console.log(arguments);
+
+    Array.prototype.forEach.call(arguments, function(argument){
+        console.log(argument);
+    });
+}
+
+printNames("a", "b");
+```
+
+#### apply
+
+Apply is almost the same as call. The only difference between apply and call is that we have to give the list of arguments inside an array, not as rest parameters.
+
+Example:
+
+```JavaScript
+function printNames(){
+    Array.prototype.forEach.apply(arguments, [(argument) => {
+        console.log(argument);
+    }]);
+}
+
+printNames("a", "b");
+```
+
+#### using standard methods in variadic functions
+
+Variadic functions are functions where the total numbers of parameters is unknown ( where we work with rest parameters ).
+
+An example for a variadic function is ```Math.max()```:
+
+```JavaScript
+console.log(Math.max(1, 2)); // 2
+console.log(Math.max(1, 2, 3)); // 3
+console.log(Math.max(1, 2, 3, 4)); // 4
+console.log(Math.max(1, 2, 3, 4, 5)); // 5
+```
+
+If we would have a list of numbers that we want to apply this function to, we can't just give the list as an argument. We can however, use apply, for example ( or add numbers as rest argument ):
+
+```JavaScript
+const numbers = [1, 2, 3, 4, 5];
+// console.log(Math.max(numbers)); // WRONG
+console.log(Math.max(...numbers)); // 5
+console.log(Math.max.apply(null, numbers)); // 5
+```
+
+**It is considered a *best practice* to set the ```this``` argument to be ```null``` if it's not needed.**
