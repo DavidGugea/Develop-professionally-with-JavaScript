@@ -273,4 +273,5 @@ As we've discussed before, JavaScript is an impure programming language. We don'
 
 - Homoiconicity means that the language itself is written as a data-structure that you can represent in that language. You can program the language itself.
 - Lazy evaluation, delayed evalutaion or non-struct evaluation means that you don't evaluate what you never need to ( if the value isn't needed, don't run the expression ) and if the evaluation is done and we need the value twice, don't evaluate it the second time, just save the answer and use it again. Only call it if you need it. The opposite of lazy evaluation is strict / eager evaluation. Lazy evaluation reduces the amount of code that is executed and it also reduces the amount of memory that is used. You're separating **how** to generate the value ( the code that you write, that generates the value ) from **when or wether** you run it.
-- Pattern matching allws you to mtach a value against some pattern to select a branch of code.
+- Pattern matching allows you to mtach a value against some pattern to select a branch of code.
+
