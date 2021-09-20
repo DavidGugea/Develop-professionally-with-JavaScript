@@ -30,6 +30,8 @@
 
 Basic JavaScript syntax
 
+---
+
 ## Chapter 2 : Functions and functional aspects
 
 ### Features of JavaScript functions
@@ -239,3 +241,36 @@ console.log(Math.max.apply(null, numbers)); // 5
 ```
 
 **It is considered a *best practice* to set the ```this``` argument to be ```null``` if it's not needed.**
+
+### Characteristics of functional programming
+
+In functional programming the focus is on functions, not on objects
+Here are some principles & traits of functional programming:
+
+- Functions are first-class objects meaning that they can be assigned to other variables, passed down as parameters inside other functions or be returned from other functions
+- Data-Structures don't change in functional programming. Functions that are used on data structures create new data-structures but never change the original ones. In pure functional programming languages you can't change data-structures. You can't add or delete elements from a list for example. JavaScript is not a pure functional programming language.
+- Functions in functional programming languages don't have any side-effects meaning that for the same input you will **always** get the same output.
+- Functional programming is declarative. We focus on **what** the program does, we don't focus on the **how** the program does what it does.
+- Functional programming languages usually take less space than imperative or object oriented programming languages.
+
+#### Differences between object oriented programming and functional programming
+
+In object oriented programming, data and behavior are assembled into a structure called a 'class'. The behavior, so the methods of the class, work together with the data. In functional programming, the data is just bound to the function that you are using. That means that you can use functions with different types of data sturctures or you can use the same data structure with different functions.
+
+In functional programming composition means that you compose easier functions to more complex ones.
+
+#### Differences between imperative programming and functional programming
+
+In imperative programming you describe **how** you do what you do. In functional programming you describe **what** the result must be, you describe how to get to the result. Shortly said:
+
+**Imperative programming is about how to get to the result while functional programming is about what the result is.**
+
+In imperative programming you use for- and while- loops combined with if/else conditions and more while in functional programming you just describe what the result is.
+
+#### Differences between pure functional programming and functional programming in JavaScript
+
+As we've discussed before, JavaScript is an impure programming language. We don't have homoiconicity, lazy evaluation ( lazy evaluation optimization ) or pattern matching, the way we have them in pure programming languages. Here is a short description of these terms:
+
+- Homoiconicity means that the language itself is written as a data-structure that you can represent in that language. You can program the language itself.
+- Lazy evaluation, delayed evalutaion or non-struct evaluation means that you don't evaluate what you never need to ( if the value isn't needed, don't run the expression ) and if the evaluation is done and we need the value twice, don't evaluate it the second time, just save the answer and use it again. Only call it if you need it. The opposite of lazy evaluation is strict / eager evaluation. Lazy evaluation reduces the amount of code that is executed and it also reduces the amount of memory that is used. You're separating **how** to generate the value ( the code that you write, that generates the value ) from **when or wether** you run it.
+- Pattern matching allws you to mtach a value against some pattern to select a branch of code.
