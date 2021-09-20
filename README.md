@@ -32,6 +32,8 @@ Basic JavaScript syntax
 
 ## Chapter 2 : Functions and functional aspects
 
+### Features of JavaScript functions
+
 Functions are first-class objects in JavaScript. That means that they can be passed as arguments inside other arguments, they can be assigned to variables, returned from other functions etc. All functions have a name property that represents the name of the function, a length property that represents the number of defined arguments that it has and a prototype property that we'll talk about in chapter 3 when in comes to OOP in JavaScript.
 
 In functions we can use, as well as we can in objects, the keyword ```this```. The keyword ```this``` is based on the context of the function. Example:
