@@ -275,3 +275,67 @@ As we've discussed before, JavaScript is an impure programming language. We don'
 - Lazy evaluation, delayed evalutaion or non-struct evaluation means that you don't evaluate what you never need to ( if the value isn't needed, don't run the expression ) and if the evaluation is done and we need the value twice, don't evaluate it the second time, just save the answer and use it again. Only call it if you need it. The opposite of lazy evaluation is strict / eager evaluation. Lazy evaluation reduces the amount of code that is executed and it also reduces the amount of memory that is used. You're separating **how** to generate the value ( the code that you write, that generates the value ) from **when or wether** you run it.
 - Pattern matching allows you to mtach a value against some pattern to select a branch of code.
 
+#### From Imperative programming to functional programming
+
+As we've already said, imperative programming has the focus on **how** we get to a result while functional programming has the focus on **what** the result is and should look like.
+
+In this sub chapter I will describe a couple methods in the functional programming.
+
+##### forEach
+
+Instead of iterating with a for loop over an array, you can use a ```forEach``` loop:
+
+```JavaScript
+array.forEach((value, index, array) => {
+    console.log(value);
+});
+```
+
+##### map
+
+If you want to get a new array from another array that has something changed to every element of it, you can use ```map```:
+
+```JavaScript
+const numbers = [1, 2, 3, 4, 5];
+function power_of_2(number){
+    return number**2;
+}
+
+const numbers_at_the_power_of_2 = numbers.map(
+    (value, index, array) => {
+        return power_of_2(value);
+    }
+);
+```
+
+##### filter
+
+If you want to filter out values based on a function that returns ```true``` or ```false``` you can use the ```filter``` method:
+
+```JavaScript
+const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+function number_under_5(number){
+    return number < 5;
+}
+
+const number_under_5 = numbers.filter(
+    (value, index, array) => {
+        return number_under_5(value);
+    }
+);
+```
+
+##### reduce
+
+You can also reduce a data structure to one single element by using the ```reduce``` method. Example:
+
+```JavaScript
+const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+const sum_of_numbers = numbers.reduce(
+    (previousValue, currentValue, currentIndex, array) => {
+        return previousValue + currentValue;
+    },
+    0 // default previousValue
+);
+```
