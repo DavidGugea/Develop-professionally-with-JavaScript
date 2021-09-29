@@ -171,6 +171,35 @@ function.bind(thisArg, arg1, ... , argN)
 
 Bind doens't execute the function, it just returns a new function back with the given context. 
 
+When creating a bound function, The bound function will get some extra arguments:
+
+- ```[[TargetFunction]]```, which represents the function that you used the ```bind()``` keyword on.
+- ```[[BoundThis]]``` which represents the ```this``` keyword.
+- ```[[BoundArgs]]``` which represents the given arguments ( apart from the ```this``` keyword ) inside the ```.bind()``` method.
+
+As previously mentioned, bind changed the ```this``` keyword of a function. **Even if it is applied multiple times, on multiple bound functions, it can only change the ```this``` keyword once:
+
+```JavaScript
+const f = function(){
+    // code
+    console.log(this);
+}
+
+const test_object_1 = { number : 1 };
+const test_object_2 = { number : 2 };
+const test_object_3 = { number : 3 };
+
+const f_bind_1 = f.bind(this, 1, 2, 3);
+const f_bind_2 = f_bind_1.bind(this, 4, 5, 6);
+const f_bind_3 = f_bind_2.bind(this, 7, 8, 9);
+
+f_bind_1();
+f_bind_2();
+f_bind_3();
+```
+
+In this example, even if the ```[[BoundThis]]``` property of each bound function will be updated to become the given ```this``` argument inside each ```.bind(this, ...args)``` function, when logging out ```this``` to the console, ```this``` won't be overriden by the other ```.bind()``` functions, and regardless of how many times we bind the bounded functions, it will always be the first given ```this``` argument, from the first ```bind()``` function ( in our case that would be ```test_object_1```. ).
+
 #### call
 
 Call, just like bind, changes the context, the function is bound to. That means that, as well as bind, it changes the meaning of the ```this``` keyword. Unlike ```bind```, call executes the function directly without giving you back a new function with a changed context. Example:
