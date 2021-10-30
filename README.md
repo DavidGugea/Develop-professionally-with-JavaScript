@@ -368,3 +368,51 @@ const sum_of_numbers = numbers.reduce(
     0 // default previousValue
 );
 ```
+
+### Functional Techniques and Design Patterns
+
+Before getting into functional techniques we should understand some basic terms.
+
+#### Homoiconicity
+
+Homoiconicity means "code as data" which signifies that hte language itself is written as a data-structure that you can represent in that language. You can prgoram the langauge itself. Homoiconicity is a property in which the program tructure is very similar to its syntax.
+
+#### Lazy evaluation / Delayed evaluation / Non-struct evaluation
+
+A programm that uses lazy evaluation doesn't evaluate what it never needs to. If you never need a value, don't run the expression that generates the valu eif you're never going to use it. Once you do evaluate it and you need it multiple times, don't evaluate it a seocnd time, just save the answer and use it again. So if you have an expression that returns a result, you either never run it, or you only run it once. This is called Lazy Evaluation Optimization. Yo don't run expression you don't need and if you do run them, you only run them once. 
+The opposite of lazy evaluation is strict/eager evaluation.
+Lazy evaluation reduces the amount of code that is executed & also the amount of memory that is used.
+
+#### Higher order and unary functions.
+
+A higher order function is a function that either takes a function as a parameter, returns a function or both.
+An unary function is a function that only takes in one parameter.
+
+#### Function composition and function piping
+
+Function composition is exactly like the mathematical function composition. You have for example 2 functions, and you want to combine them into one function that can work with the future inputs. It's the same thing in JS. 
+
+Example of function composition:
+
+```JavaScript
+const add2 = (x) => x + 2;
+const subtract1 = (x) => x - 1;
+const multiplyBy5 = (x) => x * 5;
+
+console.log(multiplyBy5(subtract1(add2(4)))); // Output : 25
+```
+
+This is not a real example of composition in a real js project since we always have to manually give the functions that we want to compose. What you have to understand from this example is that functions in composition go from the inside to the outside. First we execute the ```add2```, then ```subtract1``` and then, in the end, the ```multiplyBy5```. So we have ```(4 + 2 - 1) * 5``` which equals ```25```.
+
+Normally, we would have a function that receives the callback functions that we want to compose as an argument and then returns a function that takes in multiple arguments that will be passed in to the accumulated composed function. Example:
+
+```JavaScript
+const compose = (...callbackFunctions) => {
+    return function(...compositionValues){
+        return callbackFunctions.reduceRight(
+            (accumulator, currentCallback, currentIndex, callbackFunctionsArray) => Array.isArray(accumulator) ? currentCallback(...accumulator) : currentCallback(accumulator),
+            compositionValues
+        )
+    }
+}
+```
