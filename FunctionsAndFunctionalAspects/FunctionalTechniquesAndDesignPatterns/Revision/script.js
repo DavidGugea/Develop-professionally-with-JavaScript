@@ -21,8 +21,20 @@ const compose = (...callbackFunctions) => {
     }
 }
 
+const pipe = (...callbackFunctions) => {
+    return function(...compositionValues){
+        return callbackFunctions.reduce(
+            (accumulator, currentCallback, currentIndex, callbackFunctionsArray) => Array.isArray(accumulator) ? currentCallback(...accumulator) : currentCallback(accumulator),
+            compositionValues
+        )
+    }
+}
+
+
 const add2ThenSubtract1ThenMultiplyBy5 = compose(multiplyBy5, subtract1, add2);
+const add2ThenSubtract1ThenMultiplyBy5_Piping = pipe(add2, subtract1, multiplyBy5)
 console.log(add2ThenSubtract1ThenMultiplyBy5(4));
+console.log(add2ThenSubtract1ThenMultiplyBy5_Piping(4));
 
 /*
 const result = multiplyBy5(subtract1(add2(4)));

@@ -388,6 +388,142 @@ Lazy evaluation reduces the amount of code that is executed & also the amount of
 A higher order function is a function that either takes a function as a parameter, returns a function or both.
 An unary function is a function that only takes in one parameter.
 
+#### Memory allocation, Call stack and Heap
+
+Fully grasping the concept of memory management plays a big role in understanding certain things in functional programming and in programming in general.
+After we compile a program the memory is split into 4 pieces : machine code, static memory, call stack and heap.
+
+![Memory management illustrated](FunctionsAndFunctionalAspects/Notes/MemoryManagement_1.PNG)
+
+The program is compiled into **machine code** ( that is 1's and 0's ).
+**Static Memory** persists throughout the entire life of the program and is usually used to store things like global variables.
+
+In order to understand the call stack let's take a look at the following example in C#:
+
+```cs
+static void Main(string[] args)
+{
+    Console.WriteLine("Inside the main function.");
+    int mainFunction_variable_1 = 1;
+    int mainFunction_variable_2 = 2;
+
+    firstFunction();
+}
+static void firstFunction()
+{
+    Console.WriteLine("Entering the first function.");
+    int firstFunction_variable_1 = 3;
+    int firstFunction_variable_2 = 4;
+
+    secondFunction();
+}
+static void secondFunction()
+{
+    Console.WriteLine("Entering the second function.");
+    int secondFunction_variable_1 = 5;
+    int secondFunction_variable_2 = 6;
+
+    thirdFunction();
+}
+static void thirdFunction()
+{
+    Console.WriteLine("Entering the third function.");
+    int thirdFunction_variable_1 = 7;
+    int thirdFunction_variable_2 = 8;
+}
+
+/*
+Output:
+
+Inside the main function.
+Entering the first function.
+Entering the second function.
+Entering the third function.
+*/
+```
+
+The call stack is built out of **stack frames**. A **stack frame** is the scope of a currently running function. The call stack in C# for example always starts with the method ```main()``` since every C# program needs that method in order to run. 
+When the program starts, the method main starts as well, that means that we add a stack frame to the call stack. When we get to the line of code that executes ```firstFunction()```, we add another stack frame on top of the ```main()``` stack frame since we called another function inside the main function. During this time the stack frame ```main()``` doesn't delete itself, it just stays at the bottom. 
+Inside the ```firstFunction()``` we've called the ```secondFunction()``` which means that we'll add another stack frame on top of the stack frame ```firstFunction()```. Inside the ```secondFunction()``` we've called the ```thirdFunction()``` which means that we'll add another stack frame on top of the stack frame ```secondFunction()```.
+Stack frames are just functions that are called inside other functions that are called inside other functions and so on, until we get to the bottom of the application. 
+The call stack is a LIFO ( Last in first out ) data structure, hence the name **stack**.
+Here is an illustration:
+
+![Call stack illustration](FunctionsAndFunctionalAspects/Notes/MemoryManagement_2.PNG)
+
+After the ```thirdFunction()``` is done executing, its stack frame will be delete from the stack and we'll go back to the ```secondFunction()``` and so on.
+
+Here is the call stack once we get to the ```thirdFunction()```. You can see that the arrow points to the top of the call stack.
+
+![Call stack](FunctionsAndFunctionalAspects/Notes/MemoryManagement_3.PNG)
+
+This is how the call stack looks like once the ```thirdFunction()``` stops executing:
+
+![Call stack](FunctionsAndFunctionalAspects/Notes/MemoryManagement_4.PNG)
+
+You can see that the stack frame has been deleted from the call stack.
+This is how the call stack will look in the end after even the ```firstFunction()``` will stop executing and we'll be at the end of the program waiting for the ```main()``` function to stop so we can then close the program.
+
+![Call stack](FunctionsAndFunctionalAspects/Notes/MemoryManagement_5.PNG)
+
+Each stack frame has its own local scope with its own variables that, if not stored somewhere or returned from the frame before the stop of the execution are deleted with the stack frame. The **heap** unlike the **call stack** isn't structured and it stores reference values like objects. Since the machine code can't directly get to the objects on the heap, we assign pointers on stack frames to those objects so we can work with them. 
+
+Here is an example in c# with the functions from before:
+
+```cs
+static void Main(string[] args)
+{
+    Console.WriteLine("Inside the main function.");
+    int mainFunction_variable_1 = 1;
+    int mainFunction_variable_2 = 2;
+
+    firstFunction();
+}
+static void firstFunction()
+{
+    Console.WriteLine("Entering the first function.");
+    int firstFunction_variable_1 = 3;
+    int firstFunction_variable_2 = 4;
+
+    Person person = new Person("testName", 18);
+
+    secondFunction();
+}
+static void secondFunction()
+{
+    Console.WriteLine("Entering the second function.");
+    int secondFunction_variable_1 = 5;
+    int secondFunction_variable_2 = 6;
+
+    thirdFunction();
+}
+static void thirdFunction()
+{
+    Console.WriteLine("Entering the third function.");
+    int thirdFunction_variable_1 = 7;
+    int thirdFunction_variable_2 = 8;
+}
+```
+
+Let's look at some snapshots of the memory inside the ```firstFunction()``` stack frame and see how the heap has changed. Here is a snapshot of the heap inside the ```main()``` callstack before calling the ```firstFunction()``` and adding another stack frame on top of the ```main()``` stack frame.
+
+![Heap snapshot 1](FunctionsAndFunctionalAspects/Notes/MemoryManagement_6.PNG)
+![Heap snapshot 2](FunctionsAndFunctionalAspects/Notes/MemoryManagement_7.PNG)
+![Heap snapshot 3](FunctionsAndFunctionalAspects/Notes/MemoryManagement_8.PNG)
+
+You can see that the heap only has some preloaded objects on it that come with every console application.
+Now let's make another snapshot of the memory inside the ```firstFunction()``` stack frame after the instantiation of the person object but also before getting inside the ```secondFunction()``` stack frame.
+
+If we look inside the snapshot of the second frame on the call stack we can see that it still has the same preloaded objects but also the object Person:
+
+![Heap snapshot 4](FunctionsAndFunctionalAspects/Notes/MemoryManagement_9.PNG)
+
+Visual studio also helps us see all the instances of the class Person including their addresses on the heap:
+
+![Heap snapshot 5](FunctionsAndFunctionalAspects/Notes/MemoryManagement_10.PNG)
+
+
+
 #### Function composition and function piping
 
 Function composition is exactly like the mathematical function composition. You have for example 2 functions, and you want to combine them into one function that can work with the future inputs. It's the same thing in JS. 
@@ -416,3 +552,20 @@ const compose = (...callbackFunctions) => {
     }
 }
 ```
+
+While **functiom composition** goes from the inside to the outside ( right to left ), **function piping** goes from the outside the inside ( left to right ). Example:
+
+
+```JavaScript
+const pipe = (...callbackFunctions) => {
+    return function(...compositionValues){
+        return callbackFunctions.reduce(
+            (accumulator, currentCallback, currentIndex, callbackFunctionsArray) => Array.isArray(accumulator) ? currentCallback(...accumulator) : currentCallback(accumulator),
+            compositionValues
+        )
+    }
+}
+```
+
+![Function composition and piping illustrated](FunctionsAndFunctionalAspects/Notes/FunctionCompositionAndPiping.PNG)
+
