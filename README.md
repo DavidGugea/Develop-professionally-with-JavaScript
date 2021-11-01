@@ -522,7 +522,53 @@ Visual studio also helps us see all the instances of the class Person including 
 
 ![Heap snapshot 5](FunctionsAndFunctionalAspects/Notes/MemoryManagement_10.PNG)
 
+Now if we continue the program we will call the function ```secondFunction()``` which would add another stack frame with the scope of ```secondFunction()``` on the call stack. We can see that the object Person that we've created on the second stack frame inside ```firstFunction()``` will still be there, not only in the ```secondFunction()``` stack frame but also in the ```thirdFunction()``` stack frame.
 
+![Heap snapshot 6](FunctionsAndFunctionalAspects/Notes/MemoryManagement_11.PNG)
+![Heap snapshot 7](FunctionsAndFunctionalAspects/Notes/MemoryManagement_12.PNG)
+
+
+Once we reach the end of the ```thirdFunction()``` method, its stack frame will be deleted, then we'll have to go back to the ```secondFunction()``` method where its stack frame will be deleted and so on until we reach the main stack frame. If we take another snapshot of the memory inside the stack frame of the main function we'll see that the Person object has been deleted once the method ```firstFunction()``` stopped executing and its stack frame got popped out of the call stack. The object Person has been taken out by the garbage collector.
+
+![Heap snapshot 8](FunctionsAndFunctionalAspects/Notes/MemoryManagement_13.PNG)
+
+So as a recap:
+Memory is split in 4 sections: machine code ( m.c ), static memory, call stack and heap.
+Machine code is just 0's and 1's that the computer can understand.
+Static memory are global values that exist everywhere and persist throughout the program.
+The call stack always begins with the ```main()``` function and every function that is executed inside it adds a stack frame on top of the main stack frame. Every function that is called inside that function also adds another stack frame with its scope on top of that function's stack frame.
+The heap contains references values. This values have a certain unique hexadecimal address where they are stored. Pointers are created on seperate stack frames that can point to that certain object on the heap. Once a stack frame with the last pointer of a certain object is getting popped out of the call stack, the garbage collector deletes the object from the heap to eliberate more memory.
+
+![Recap Memory Management](FunctionsAndFunctionalAspects/Notes/MemoryManagement_14.PNG)
+
+In JavaScript however, we don't have a main stack frame, we don't have the ```main``` function where everything starts. We just start writing code wherever we want in the script. 
+In JavaScript, we have the so called, ```global context```. Take a look at the following example:
+
+```JavaScript
+const firstFunction = () => {
+    console.log("Inside the first function.");
+    secondFunction();
+}
+
+const secondFunction = () => {
+    console.log("Inside the second function.");
+    thirdFunction();
+}
+
+const thirdFunction = () => {
+    console.log("Iniside the third funciton.");
+}
+
+firstFunction();
+```
+
+The function ```firstFunction()``` is called inside the ```global context```, if we debug this application in chrome up to the ```thirdFunction()``` stack frame you will see that the main stack frame of javascript is called ```anonymous``` ( also ```main``` in some other browsers ).
+
+![JavaScript Anonymous Main Stack Frame](FunctionsAndFunctionalAspects/Notes/MemoryManagement_15.PNG)
+
+Another thing that you have to pay attention to is threading. When using threading, the only thing that splits up is the call stack, the heap is never split up between multiple threads. So if multiple threads access an object, they are all accessing the same exact object. This could lead to dead locks in certain cases that might be hard to debug.
+
+![Threading call stack and heap representation](FunctionsAndFunctionalAspects/Notes/MemoryManagement_16.PNG)
 
 #### Function composition and function piping
 
@@ -569,3 +615,4 @@ const pipe = (...callbackFunctions) => {
 
 ![Function composition and piping illustrated](FunctionsAndFunctionalAspects/Notes/FunctionCompositionAndPiping.PNG)
 
+#### Let, Const and Var

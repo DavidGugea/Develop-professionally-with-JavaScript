@@ -1,71 +1,26 @@
-const add2 = (x) => x + 2;
-const subtract1 = (x) => x - 1;
-const multiplyBy5 = (x) => x * 5;
-
-function test(...args){
-    testFunction(args);
-}
-function testFunction(value){
-    console.log(...value);
-}
-
-test(1, 2, 3, 4, 5, 6);
-
-
-const compose = (...callbackFunctions) => {
-    return function(...compositionValues){
-        return callbackFunctions.reduceRight(
-            (accumulator, currentCallback, currentIndex, callbackFunctionsArray) => Array.isArray(accumulator) ? currentCallback(...accumulator) : currentCallback(accumulator),
-            compositionValues
-        )
-    }
-}
-
-const pipe = (...callbackFunctions) => {
-    return function(...compositionValues){
-        return callbackFunctions.reduce(
-            (accumulator, currentCallback, currentIndex, callbackFunctionsArray) => Array.isArray(accumulator) ? currentCallback(...accumulator) : currentCallback(accumulator),
-            compositionValues
-        )
-    }
-}
-
-
-const add2ThenSubtract1ThenMultiplyBy5 = compose(multiplyBy5, subtract1, add2);
-const add2ThenSubtract1ThenMultiplyBy5_Piping = pipe(add2, subtract1, multiplyBy5)
-console.log(add2ThenSubtract1ThenMultiplyBy5(4));
-console.log(add2ThenSubtract1ThenMultiplyBy5_Piping(4));
-
 /*
-const result = multiplyBy5(subtract1(add2(4)));
-console.log(result);
+The let statement declares a block-scoped local variable, optionally initializing it to a value.
 
-const compose = (...callbackFunctions) => {
-    return function(value){
-        return callbackFunctions.reduceRight(
-            (accumulator, currentCallback, currentIndex, callbackArray) => {
-                console.log(currentCallback);
-                return currentCallback(accumulator);
-            },
-            value
-        )
-    }
-}
+A block statement (or compound statement in other languages) is used to group zero or more statements.
 
-const pipe = (...callbackFunctions) => {
-    return function(value){
-        return callbackFunctions.reduce(
-            (accumulator, currentCallback, currentIndex, callbackArray) => {
-                console.log(currentCallback);
-                return currentCallback(accumulator);
-            },
-            value
-        )
-    }
-}
+The block statement is often called compound statement in other languages. It allows you to use multiple statements where JavaScript expects only one statement. Combining statements into blocks is a common practice in JavaScript. The opposite behavior is possible using an empty statement, where you provide no statement, although one is required.
 
-const composedFunctions = compose(multiplyBy5, subtract1, add2);
-console.log(composedFunctions(4));
-const pipeFunctions = pipe(add2, subtract1, multiplyBy5);
-console.log(pipeFunctions(4));
+The var statement declares a function-scoped or globally-scoped variable, optionally initializing it to a value.
+
+let allows you to declare variables that are limited to the scope of a block statement, or expression on which it is used, unlike the var keyword, which declares a variable globally, or locally to an entire function regardless of block scope.
 */
+
+function setup()  {
+  for (let i = 0; i < 100; i++) {
+    // some stuff will happen
+    if(window.mouseX > 20){
+      let j = 20;
+    }
+
+    console.log(j);
+  }
+
+  console.log(i);
+}
+
+setup();
