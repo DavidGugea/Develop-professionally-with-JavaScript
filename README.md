@@ -616,3 +616,101 @@ const pipe = (...callbackFunctions) => {
 ![Function composition and piping illustrated](FunctionsAndFunctionalAspects/Notes/FunctionCompositionAndPiping.PNG)
 
 #### Let, Const and Var
+
+Before learning the difference between let, const and var let's talk about what a block scope is. A block scope is the space that we have between curly braces (```{}```) where we write our code in.
+
+Example:
+```JavaScript
+function(){
+    // This is a scope
+
+    if(true){
+        // This is another scope
+    }
+}
+```
+
+```let``` is a statement which defines variables inside the local block scope. That means that the variables are only visible **inside the block scope their were defined in and inside all the other sub-scopes**.
+
+```JavaScript
+if(true){
+    let i = 5;
+}
+
+console.log(i); // ReferenceErrror
+```
+
+Here, we are getting a reference error since the scope of i ends inside the if statement. ```i``` is only defined inside the scope of the ```if``` statement:
+
+![if example -- scope](FunctionsAndFunctionalAspects/Notes/let_var_const_1.PNG)
+
+```let``` is only visible inside the block scoped it was defined in and all the other sub-scopes.
+
+```JavaScript
+if(true){
+    let i = 5;
+    console.log(i); // 5
+
+    if(true){
+        console.log(i); // 5
+    }
+}
+```
+
+You can always create a block scope when you need it by just adding curly braces to your code.
+
+```JavaScript
+// Global scope
+{
+    // A local block scope that we created with curly braces
+    let i = 5;
+}
+
+console.log(i);
+```
+
+Now let's talk about ```var```. The ```statement``` declares a variable inside the function scope. While ```let``` is only about ```block scope```, ```var``` is about ```function scope```. 
+
+```JavaScript
+function test(){
+    var i = 5;
+}
+
+console.log(i); // ReferenceError
+test();
+console.log(i); // ReferenceError
+```
+
+The scope of a variable declared with ```var``` is either the enclosing function and all functions declared withing it or, if the variable is not decalred inside any function, the variable will be **global**.
+
+```JavaScript
+if(true){
+    var i = 5;
+    let c = 10;
+}
+var j = 15;
+
+function test(){
+    console.log(j);
+    console.log(c);
+}
+
+console.log(j);
+test(); // console.log -- > 15, 5, ReferenceError ( because of c )
+```
+
+You can see in this example that c was declared using ```let```, so its scope was only insied the ```if``` statement while the other 2 variables were declared using ```var``` and because they weren't inside any function, their scope was global.
+
+Now let's talk about the **Temporal Dead Zone ( TDZ )**. Variables that are declared with ```let``` can't be written or read before initialization ( that means that they also need a value ). All variables declared with ```var``` however, are hoisted internally by javascript at the start of their scope, meaning that they will get the default value of ```undefined```.
+
+```JavaScript
+{
+    console.log(j); // undefined
+    console.log(i); // ReferenceError
+
+    let i = 5;
+    var j = 10;
+}
+```
+
+The variable ```i``` was declared with ```let``` and the variable ```j``` was declared using ```var```. Since all variables declared with ```var``` are hoisited internally by javascript at the top of any function they receive the default value of ```undefined``` while the variables declared using ```let``` can't be read nor written before initialization.
