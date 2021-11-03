@@ -713,4 +713,95 @@ Now let's talk about the **Temporal Dead Zone ( TDZ )**. Variables that are decl
 }
 ```
 
-The variable ```i``` was declared with ```let``` and the variable ```j``` was declared using ```var```. Since all variables declared with ```var``` are hoisited internally by javascript at the top of any function they receive the default value of ```undefined``` while the variables declared using ```let``` can't be read nor written before initialization.
+The variable ```i``` was declared with ```let``` and the variable ```j``` was declared using ```var```. Since all variables declared with ```var``` are hoisited internally by javascript at the top of any function they receive the default value of ```undefined``` while the variables declared using ```let``` can't be read nor written before initialization. Variables declared with ```const``` behave the same as ```let``` but they must have constant values ( meaning that their values can't change )
+
+#### Closures
+
+A closure is the combination between a function and its lexical scope. The lexical scope is the function's accessible scope around it. The **lexical scope** or the **lexical environment** is the accessible ```scope```.
+
+Example:
+
+```JavaScript
+var GLOBAL_VARIABLE = "hello world";
+
+function test(){
+    const i = 5;
+    const j = 10;
+    let z = 15;
+
+    return () => {
+        console.log(i);
+        console.log(j);
+        console.log(z);
+
+        let x = 20;
+        console.log(x);
+        console.log(GLOBAL_VARIABLE);
+    }
+}
+
+function init(){
+    const closure = test();
+    closure(); // output : 5, 10, 15; 20; "hello world"
+}
+init();
+```
+
+In this case the lexical scope of the returned function was the scope of the outside function ```test()``` which included the 3 local variables ```i```, ```j``` and ```z``` but also the global scope which included one variable called the ```GLOBAL_VARIABLE```.
+
+You can see that even if the ```test()``` stack frame has been popped of the call stack after its execution at ```const closure = test()```, the returned function still has access to its scope.
+
+With closures, we also have the **Closure Scope Chain**. Each closure in JavaScript has 3 scopes:
+
+* Own scope
+* Outer functions' scope
+* Global scope
+
+![Closure Scope Chain](FunctionsAndFunctionalAspects/Notes/closureScopeChain.PNG)
+
+I have written Outer **functions'** scope" because as we've previously seen in the ```let, var and const``` section, the scope of variables declared with ```let``` or ```var``` are block scoped ( ```var``` is not only block scoped but also function scoped ). That means that the lexical environemnt ( which is the **accessible scope** ) extends itself over multiple outer functions:
+
+```JavaScript
+const test = () => {
+    let i = 5;
+
+    return test_2 = () => {
+        let j = 10;
+
+        return test_3 = () => {
+            let x = 15;
+
+            return test_4 = () => {
+                console.log(i);
+                console.log(j);
+                console.log(x);
+            }
+        }
+    }
+}
+
+const x = test();
+x()()();
+```
+
+The closure ```test_4``` has access to all the variables outside all the outer functions. Its lexical environement extends itself over multiple functions.
+
+All JavaScript functions are actually closures, even when you define a function that is not an inner function, the ```outer functions' scope``` is just the scope of the main stack frame, the ```global scope```. Just because the ```outer functions' scope``` and the ```global scope``` coincide doesn't mean that the defined function is not a scope:
+
+```JavaScript
+let i = 5;
+
+function test(){
+    console.log("This is my inner scope");
+    console.log("Accessing a variable from the outer scope...");
+    console.log(i);
+}
+
+test();
+```
+
+In this case, even the function ```test()``` is a closure, since it is a function combined with a lexical environment.
+
+![Closure Scope Chain](FunctionsAndFunctionalAspects/Notes/closureAllFunctionsAreClosures.PNG)
+
+In this case the ```outer function scope``` and the ```global scope``` coincide. In JavaScript, as previously explained in the section with the ```call stack```, we are kind of always inside a function since the stack frame starts with the ```anonymous function```, so the ```global scope``` is a function, but when talking about closures that are actual inner functions, we sepearte these terms to make things more clearly, since in that case the ```global scope``` can be accessed by all functions that are created while the ```outer functions' scope``` can only be accessed by the inner function returned.

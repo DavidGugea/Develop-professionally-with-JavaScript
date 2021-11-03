@@ -1,13 +1,20 @@
-var addTo = function(passed){
-    var add = function(inner){
-        return passed + inner;
+const test = () => {
+    let i = 5;
+
+    return test_2 = () => {
+        let j = 10;
+
+        return test_3 = () => {
+            let x = 15;
+
+            return test_4 = () => {
+                console.log(i);
+                console.log(j);
+                console.log(x);
+            }
+        }
     }
-
-    console.dir(add);
-
-    return add;
 }
 
-{
-    console.dir(addTo(3));
-}
+const x = test();
+x()()();
