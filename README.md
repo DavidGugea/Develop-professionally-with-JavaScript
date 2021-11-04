@@ -805,3 +805,147 @@ In this case, even the function ```test()``` is a closure, since it is a functio
 ![Closure Scope Chain](FunctionsAndFunctionalAspects/Notes/closureAllFunctionsAreClosures.PNG)
 
 In this case the ```outer function scope``` and the ```global scope``` coincide. In JavaScript, as previously explained in the section with the ```call stack```, we are kind of always inside a function since the stack frame starts with the ```anonymous function```, so the ```global scope``` is a function, but when talking about closures that are actual inner functions, we sepearte these terms to make things more clearly, since in that case the ```global scope``` can be accessed by all functions that are created while the ```outer functions' scope``` can only be accessed by the inner function returned.
+
+You can also see all the scopes of a closure if you ```dir``` it inside the console:
+
+```JavaScript
+const someFunction = () => {
+    let i = 5;
+    let j = 10;
+
+    return () => {
+        let x = 15;
+
+        console.log(i);
+        console.log(j);
+        console.log(z);
+    }
+}
+
+const result = someFunction();
+console.dir(result);
+```
+
+![Dir Closure](FunctionsAndFunctionalAspects/Notes/closureScopeDir.PNG)
+
+As previously explained we have 3 scopes but the ```closure``` scope referes to the ```outer functions' scope``` that we've talked about.
+
+#### Partial Application
+
+Sometimes you might not want to directly execute a function with all the arguments that it needs, since maybe it you don't have all the needed arguments yet. You can solve problems like this using partial application. With partial applications you can preserves certain arguments inside a returned closure and execute that closure with other arguments whenever you want. Example:
+
+```JavaScript
+function partial(aFunction /*, the rest of the arguments */){
+    const parametersBound = Array.prototype.slice.call(arguments, 1);
+    return function(){
+        const parametersUnbound = Array.prototype.slice.call(arguments, 0);
+        return aFunction.apply(
+            this,
+            parametersBound.concat(parametersUnbound)
+        );
+    }
+}
+
+const add = (...args) => {
+    let sum = 0;
+    for(let i = 0 ; i < args.length ; i++ ){
+        sum += args[i];
+    }
+
+    return sum;
+}
+j
+const partialAdd = partial(add, 1, 2);
+console.log(partialAdd(3)); // 1 + 2 + 3 = 6
+```
+
+Partial applications don't have to be split up in 2, it's not a rule:
+
+```JavaScript
+function partialAdd(number1, number2){
+    return function(number3, number4, number5){
+        return function(number6, number7, number8, number9){
+            return function(number10){
+                return number1 + number2 + number3 + number4 + number5 + number6 + number7 + number8 + number9 + number10;
+            }
+        }
+    }
+}
+```
+
+The ```outer functions' scope``` of the last closure extends itself up to the definition of the function ```partialAdd``` due to closures. The depth of a nested function doesn't play any role in closures.
+
+#### Currying
+
+Currying is very similar to partial application. Look at the following example:
+
+```JavaScript
+function add(x, y){
+    return x + y;
+}
+
+const result = add(1, 2); // 3
+```
+
+If we want to curry the function add we can return a closure with the first number in it's outer scope:
+
+```JavaScript
+function add(x){
+    return function(y){
+        return x + y;
+    }
+}
+```
+
+To make it easier to see we can use arrow functions:
+
+```JavaScript
+const add = x => y => x + y;
+```
+
+Now let's say that we want to have a function that adds up three numbers:
+
+```JavaScript
+const add = x => y => z => x + y + z;
+``` 
+
+This is currying, it's very similar to partial applications. Here is the difference:
+
+Currying: A function returning another function that might return another function, but every returned function must take only one parameter at a time.
+
+Partial application: A function returning another function that might return another function, but each returned function can take several parameters.
+
+Currying might or might not return another function but it will always required **only one parameter**. A partial application might or might not return another function but it might require **one or more parameters**.
+
+#### IIFE ( Immediately Invoked Function Expression ) || SEAF ( Self-Executing Anonymous Function )
+
+An IIFE is a function with no name that executes itself:
+
+```JavaScript
+(
+    () => {
+        // Your code in here
+    }
+)();
+```
+
+It is used for modules, to build scopes and it's also good to use ```async``` ( see Promises, later chapter ) on an anonymous function that instantly executes itself.
+
+#### Self-defining Functions
+
+Self-defining functions are functions that re-define themselves internally
+
+```JavaScript
+function printOneThenPrintTwo(){
+    console.log(1);
+
+    printOneThenPrintTwo = function(){
+        console.log(2);
+    }
+}
+
+printOneThenPrintTwo();
+printOneThenPrintTwo();
+
+// Output : 1, 2
+```
