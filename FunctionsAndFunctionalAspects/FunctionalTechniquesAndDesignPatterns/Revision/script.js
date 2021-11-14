@@ -1,35 +1,35 @@
-const test1 = async () => {
-    setTimeout(
-        () => {
-            return 5;
-        },
-        2000
-    )
-}
-const test2 = () => new Promise(
-    (resolve, _) => {
-        setTimeout(
-            () => resolve(25),
-            1000
-        )
-    }
+console.log("Start");
+
+setTimeout(
+    () => console.log("Macrotask 1"),
+    1000
 );
-const test3 = () => new Promise(
-    (resolve, _) => {
-        setTimeout(
-            () => {
-                console.log('second');
-                resolve();
-            },
-            2000
-        )
-    }
+setTimeout(
+    () => console.log("Macrotask 2"),
+    1000
 );
 
-(
-    async () => {
-        console.log("first");
-        await test3();
-        console.log("third");
-    }
-)();
+queueMicrotask(
+    () => console.log("Microtask 1")
+);
+queueMicrotask(
+    () => console.log("Microtask 2")
+);
+
+setTimeout(
+    () => console.log("Macrotask 3"),
+    1000
+);
+setTimeout(
+    () => console.log("Macrotask 4"),
+    1000
+);
+
+Promise.resolve().then(
+    () => console.log("Microtask 3")
+);
+Promise.resolve().then(
+    () => console.log("Microtask 4")
+);
+
+console.log("End");

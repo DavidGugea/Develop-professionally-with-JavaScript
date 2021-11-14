@@ -949,3 +949,797 @@ printOneThenPrintTwo();
 
 // Output : 1, 2
 ```
+
+#### Promises, Async/Await, Synchronous and Asynchronous tasks
+
+Before getting into synchronous and asynchronous tasks, we must first understand what a task is and what the difference between threads, processes and tasks is.
+
+**A process contains multiple threads. A thread contains multiple workers. A worker must finish multiple tasks. The way a worker executes those tasks can be synchronous or asynchronous.**
+
+Here is an overview:
+
+![Process Thread Worker Task Diagram](FunctionsAndFunctionalAspects/Notes/ProcessThreadWorkerTask.PNG)
+
+You can see that each worker has 3 tasks. Tasks can be executed synchronously or asynchronously ( sync or async ).
+Synchronous means that a task must be fully finished before the worker can start working on the next task. Asynchronous means that a task can start whenever it needs to start and it doesn't have to wait for any task to start or finish before starting:
+
+![Synchronous vs asynchronous tasks](FunctionsAndFunctionalAspects/Notes/SynchronousVsAsynchronousTasks.PNG)
+
+Let's take a look at the following JS code:
+
+```JavaScript
+const firstFunction = () => {
+    console.log("The execution of the first function has started.");
+    setTimeout(
+        () => {
+            console.log("The execution of the first function has stopped.");
+        },
+        2000
+    );
+}
+
+const secondFunction = () => {
+    console.log("The execution of the second function has started.");
+    console.log("The execution of the second function has stopped.");
+}
+
+firstFunction();
+secondFunction();
+/*
+Inside console:
+
+The execution of the first function has started.
+The execution of the second function has started.
+The execution of the second function has stopped.
+The execution of the first function has stopped.
+*/
+```
+
+The function ```setTimeout``` is an asynchronous function, that means that it won't wait for anything and it will just execute when it's time to execute.
+If we want to have the ```firstFunction``` and the ```secondFunction``` executed in order we must call the ```secondFunction``` at the end of the ```setTimeout``` function inside the ```firstFunction```.
+
+```JavaScript
+const firstFunction = () => {
+    console.log("The execution of the first function has started.");
+    setTimeout(
+        () => {
+            console.log("The execution of the first function has stopped.");
+
+            secondFunction();
+        },
+        2000
+    );
+}
+
+const secondFunction = () => {
+    console.log("The execution of the second function has started.");
+    console.log("The execution of the second function has stopped.");
+}
+
+firstFunction();
+/*
+Inside the console:
+
+The execution of the first function has started.
+The execution of the first function has stopped.
+The execution of the second function has started.
+The execution of the second function has stopped.
+*/
+```
+
+This solves our problem. But there is another problem now. First of all, it is very hard to read the code since we don't exactly know that the ```secondFunction``` starts inside the ```firstFunction```, that is not clear when we start the ```firstFunction``` and we look at the code for the first time. So the code is hard to read. Another problem is if we try to add more steps to our code:
+
+```JavaScript
+const firstFunction = () => {
+    console.log("The execution of the first function has started.");
+    setTimeout(
+        () => {
+            console.log("The execution of the first function has stopped.");
+            secondFunction();
+        },
+        2000
+    );
+}
+
+const secondFunction = () => {
+    console.log("The execution of the second function has started.");
+    console.log("The execution of the second function has stopped.");
+    thirdFunction();
+}
+
+const thirdFunction = () => {
+    console.log("The execution of the third function has started.");
+    setTimeout(
+        () => {
+            console.log("The execution of the third function has ended.");
+            fourthFunction();
+        },
+        3000
+    );
+}
+
+const fourthFunction = () => {
+    console.log("The execution of the fourth function has started.");
+    console.log("The execution of the fourth function has stopped.");
+}
+
+firstFunction();
+
+/*
+
+Inside the console:
+
+The execution of the first function has started.
+The execution of the first function has stopped.
+The execution of the second function has started.
+The execution of the second function has stopped.
+The execution of the third function has started.
+The execution of the third function has ended.
+The execution of the fourth function has started.
+The execution of the fourth function has stopped.
+*/
+```
+
+The code works but is very hard to read and bugs would be very hard to solve using this code. Here is how the code would look like if we would use only callbacks:
+
+```JavaScript
+const firstFunction = () => {
+    console.log("The execution of the first function has started.");
+    setTimeout(
+        () => {
+            console.log("The execution of the first function has stopped.");
+
+            setTimeout(
+                () => {
+                    console.log("The execution of the second function has started.");
+                    console.log("The execution of the second function has stopped.");
+
+                    setTimeout(
+                        () => {
+                            console.log("The execution of the third function has started.");
+                            setTimeout(
+                                () => {
+                                    console.log("The execution of the third function has ended.");
+
+                                    setTimeout(
+                                        () => {
+                                            console.log("The execution of the fourth function has started.");
+                                            console.log("The execution of the fourth function has stopped.");
+                                        },
+                                        0
+                                    );
+                                },
+                                3000
+                            );
+                        },
+                        0
+                    );
+                },
+                0
+            );
+        },
+        2000
+    );
+}
+
+firstFunction();
+/*
+Inside console:
+
+Same output, the only difference is that we are only using callbacks.
+*/
+```
+
+You can see that the code is shaped like a pyramid. This is also called **callback hell** or **the pyramid of doom**.
+
+You can solve this problem with **promises**.
+
+##### Promises
+
+A promise in JavaScript is like a promise in real life. A promise works as placeholder for a future value. A Promise in JS can always be in one of the following states:
+
+1. Pending
+2. Fulfilled
+3. Rejected
+
+When a promise is pending that means that it is still waiting for a value.
+When a promise is fulfilled that means that it is has the value it has been waiting for.
+When a promise is rejected that means that it contains the error that occurred while trying to get to the value.
+
+When a promise is either **fulfilled** ***or*** **rejected** that promise is also called ***settled***.
+The state of the promise can only change from pending to either fulfilled or rejected. A Promise can't change states once it is settled. The same goes for the result/error of the promise. The promise can only have one result and one reuslt only and it can never change. The result of a promise can never change once it has been given one. The same goes for the error. The error of a promise can never cahnge once it has been given one.
+Every promise takes in one parameter. That parameter is called the executor. The executor is a callback function that gets as arguments 2 callback functions: ```resolve``` and ```reject```. The executor function is written by the user but it gets executed in the promise with those 2 callback functions ```resolve``` and ```reject```. When the executor calls ```resolve```, it must give as an argument the result of the promise. The state of the promise will then be changed to ```fulfilled```. When the executor calls ```reject```, it must give as an argument the error of the promise. The state of the promise will then be changed to ```rejected```.
+So, again:
+
+When the callback function ```resolve``` is used inside the executor that means that the promsie has received the value we were waiting for. The state of the promise will be changed from PENDINg to FULFILLED. The value passed in to the reuslt callback inside the executor will also be the result of the funciton. When the callback function reject is used inside the executor callback that means taht the promise couldn't fulfill and it got an error. The state of the romise will then cahnge from PENDING to REJECTED. The error passed in to reject callback will also be the error of the promise. 
+
+In order to use the result or the error of a promise you need to use ```.then```. 
+The method ```.then``` takes in 2 callbacks : ```onfulfilled_callback``` and ```onrejected_callback```. One of those callbacks will be executed once the promise is settled. 
+The method ```.catch``` takes in 1 callback : ```onrejected_callback``` and calls ```.then(null, rejected_callback)``` internally.
+The method ```.finally``` takes in 1 callback and will always be called at the end, no matter the state of the settled promise.
+
+It is important to know that the executor of a promise ( the argument that is given to a promise's constructor ) is always execute synchronously. We'll see later how to solve that problem ( using async/await ).
+
+Here is how a custom promise would look like ( it doesn't implement all the futures of a normal promise, it's just a prototype ):
+
+```JavaScript
+'use strict';
+
+class CustomPromise{
+    constructor(executor){
+        /*
+        A Promise can be in one of the following states:
+
+        1. PENDING, meaning that the promise is still waiting for a result
+        2. FULFILLED, meaning that the promise has a result
+        3. REJECTED, meaning that the promise contains the error that occurred while trying to get the result
+        */
+        this.POSSIBLE_PROMISE_STATES = {};
+        Object.defineProperties(
+            this.POSSIBLE_PROMISE_STATES,
+            {
+                "PENDING" : {
+                    value : 0,
+                    writable : false,
+                    enumerable : true,
+                    configurable : false
+                },
+                "FULFILLED" : {
+                    value : 1,
+                    writable : false,
+                    enumerable : true,
+                    configurable : false
+                },
+                "REJECTED" : {
+                    value : 2,
+                    writable : false,
+                    enumerable : true,
+                    configurable : false
+                }
+            }
+        );
+
+        // The promise always starts in pending mode
+        this.CURRENT_PROMISE_STATE = this.POSSIBLE_PROMISE_STATES.PENDING;
+
+        // In the following variables we will store the result or the error of the promise
+        this.PROMISE_RESULT = null;
+        this.PROMISE_ERROR = null;
+
+        // In the following array we will store all the callbacks that needed the result of the value in order to execute while the promise was pending
+        this.onfulfilled_callbacks = [];
+
+        // In the following array we will store al lthe callbacks that needed the error of the value in order to execute while the promise was pending
+        this.onrejecte_callbacks = [];
+
+        // Execute the executor and pass in the resolve and reject methods as its arguments
+        executor(this.resolve.bind(this), this.reject.bind(this));
+    }
+    resolve(EXECUTOR_PROMISE_RESULT){
+        // Since the promise can only have one result, we'll check if the promise is already fulfilled. If the promise is already fulfilled then the given result will be ignored.
+        if(this.CURRENT_PROMISE_STATE === this.POSSIBLE_PROMISE_STATES.FULFILLED) return;
+
+        // Change the state of the promise to fulfilled since we now have the result of the promise
+        this.CURRENT_PROMISE_STATE = this.POSSIBLE_PROMISE_STATES.FULFILLED;
+
+        // Save the result of the promise
+        this.PROMISE_RESULT = EXECUTOR_PROMISE_RESULT;
+
+        // Execute all the callbacks that have been waiting for the result of the promise while the promise was still pending.
+        this.onfulfilled_callbacks.forEach(callback => callback(this.PROMISE_RESULT));
+    }
+    reject(EXECUTOR_PROMISE_ERROR){
+        // Since the promise can only ahve one error, we'll check if the promise is already rejected. If the promise is already rejecte d then the given error will be ignored.
+        if(this.CURRENT_PROMISE_STATE === this.POSSIBLE_PROMISE_STATES.REJECTED) return;
+
+        // Change the state of the promise to rejected since we now have the error of the promise
+        this.CURRENT_PROMISE_STATE = this.POSSIBLE_PROMISE_STATES.REJECTED;
+
+        // Save the error of the promise
+        this.PROMISE_ERROR = EXECUTOR_PROMISE_ERROR;
+
+        // Execute all the callbacks that have been waiting for the error of the promise while the promise was still pending.
+        this.onrejecte_callbacks.forEach(callback => callback(this.PROMISE_ERROR));
+    }
+    then(resolve_callback, reject_callback){
+        // Check the state of the promise. If the promise has been fulfilled, execute the resolve_callback argument with the result of the promise. If the promise has been rejected, execute the reject_callback argument with the error of the promise. If the promise is still pending then push both callbacks in the arrays that contain callbacks for onfulfilled and onrejected events.
+
+        switch(this.CURRENT_PROMISE_STATE){
+            case this.POSSIBLE_PROMISE_STATES.PENDING:
+                if(resolve_callback !== null){
+                    this.onfulfilled_callbacks.push(resolve_callback);
+                }
+                if(reject_callback !== null){
+                    this.onrejecte_callbacks.push(reject_callback);
+                }
+
+                break;
+            case this.POSSIBLE_PROMISE_STATES.FULFILLED:
+                resolve_callback(this.PROMISE_RESULT);
+
+                break;
+            case this.POSSIBLE_PROMISE_STATES.REJECTED:
+                reject_callback(this.PROMISE_ERROR);
+
+                break;
+        }
+    }
+    catch(reject_callback){
+        this.then(null, reject_callback);
+    }
+}
+
+const testExecutor = (resolve, reject) => {
+    setTimeout(
+        () => {
+            resolve("This is the result of the promise");
+        },
+        2000
+    );
+}
+
+const promise = new CustomPromise(testExecutor);
+
+promise
+    .then(
+        (promiseResult) => {
+            console.log(`The result of the promise is -- > ${promiseResult}`);
+        }
+    );
+```
+
+Here is how to build a normal promise:
+
+```JavaScript
+const promise = new Promise(
+    (resolve, reject) => {
+        setTimeout(
+            () => {
+                resolve(25);
+            },
+            2000
+        )
+    }
+);
+
+promise
+    .then(
+        result => console.log(`The result of the promise is -- > ${result}`)
+    )
+    .catch(
+        error => console.log(`The error of the promise is -- > ${error.message}`)
+    )
+    .finally(
+        () => console.log("This will always be executed, no matter the state of the settled promise")
+    )
+
+/*
+In console:
+
+The result of the promise is -- > 25
+This will always be executed, no matter the state of the settled promise
+*/
+```
+
+There is more to promises than this.
+
+***The method ```Promise.then``` always returns a promise***:
+If the handler function ( which is the function executed by ```.then``` or ```.catch``` [ which internally calls ```.then``` anyways ] regardless of the state of the settled promise ):
+
+1. returns a value, the ```.then``` method will return a resolved promise with the given value as the result of the returned promise.
+2. doesn't return anything, the promise returned by ```.then``` will be resolve with the result of ```undefined```.
+3. throws an error, the promise returned by ```.then``` will be rejected with the given error.
+4. returns a fulfilled promise, then the value returned by ```.then``` will be a fulfilled promise with the result of the returned fulfilled promise.
+5. returns a rejected promise, then the value returned by ```.then``` will be a rejected promise with the error of the return rejected promise.
+6. returns a pending promise, then the value returned by ```.then``` will return a promise which will be subsequent to the result/error of the returned pending promise.
+
+Here is the list from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/then, better explained and their diagram:
+
+* returns a value, the promise returned by then gets resolved with the returned value as its value.
+* doesn't return anything, the promise returned by then gets resolved with an undefined value.
+* throws an error, the promise returned by then gets rejected with the thrown error as its value.
+* returns an already fulfilled promise, the promise returned by then gets fulfilled with that promise's value as its value.
+* returns an already rejected promise, the promise returned by then gets rejected with that promise's value as its value.
+* returns another pending promise object, the resolution/rejection of the promise returned by then will be subsequent to the resolution/rejection of the promise returned by the handler. Also, the resolved value of the promise returned by then will be the same as the resolved value of the promise returned by the handler.
+
+![Promise overview and chaining](FunctionsAndFunctionalAspects/Notes/PromiseOverviewAndChaining.PNG)
+
+Here is an example:
+
+```JavaScript
+const promise = new Promise(
+    (resolve, reject) => {
+        setTimeout(
+            () => {
+                resolve(25);
+            },
+            2000
+        );
+    }
+);
+
+promise
+    .then(
+        (result) => {
+            console.log(result);
+
+            return 50;
+        }
+    )
+    .then(
+        (result) => {
+            console.log(result);
+
+            return 75;
+        }
+    )
+    .then(
+        (result) => {
+            console.log(result);
+
+            return 100;
+        }
+    )
+    .then(
+        (result) => {
+            console.log(result);
+        }
+    );
+
+/*
+In console:
+
+25,
+50,
+75,
+100
+*/
+```
+
+```Promise.resolve(value)``` will return a resolved promise with the given value as the result of the promise.
+```Promise.reject(reason)``` will return a rejected promsie with the given error/reason as the error of the promise.
+
+Take the following template as a starting point for the next methods on promises:
+
+```JavaScript
+const promise1 = Promise.resolve(25);
+const promise2 = Promise.reject(new Error("Error 1"));
+const promise3 = new Promise(
+    (resolve, _) => {
+        setTimeout(
+            () => {
+                resolve(50);
+            },
+            2000
+        );
+    }
+);
+const promise4 = new Promise(
+    (_, reject) => {
+        setTimeout(
+            () => {
+                reject(new Error("Error 2"));
+            },
+            2000
+        );
+    }
+);
+
+const promises = [promise1, promise2, promise3, promise4];
+const fulfilling_promises = [promise1, promise3];
+const rejecting_promises = [promise2, promise4];
+```
+
+```Promise.all()``` takes in an iterable of promises and returns a promise. The promise resolves into an array containing all the results of the promises. If one of the promises gets rejected, then ```Promise.all()``` will return a rejected promise with the error being the error of the first promise that rejected in the given array of promises
+
+Web MDN explanation:
+
+> The Promise.all() method takes an iterable of promises as an input, and returns a single Promise that resolves to an array of the results of the input promises. This returned promise will resolve when all of the input's promises have resolved, or if the input iterable contains no promises. It rejects immediately upon any of the input promises rejecting or non-promises throwing an error, and will reject with this first rejection message / error.
+
+Example:
+
+```JavaScript
+Promise.all(promises)
+    .then(
+        results => results.forEach(result => console.log(result))
+    )
+    .catch(
+        error => console.log(error.message)
+    );
+
+// In console: Error 1
+```
+
+```Promise.allSettled()``` takes in an iterable of promises and returns an array with objects that contain data about the settled promises. Each object contains the ```status``` property, that can be either ```fulfilled``` or ```rejected```. If the status is ```fulfilled``` the object will also contain a ```value``` property which will contain the result of the fulfilled promise. If the status is ```rejected``` the object will also contain a ```reason``` property which will contain the error of the rejected promise.
+
+Web MDN explanation:
+
+> The Promise.allSettled() method returns a promise that resolves after all of the given promises have either fulfilled or rejected, with an array of objects that each describes the outcome of each promise. It is typically used when you have multiple asynchronous tasks that are not dependent on one another to complete successfully, or you'd always like to know the result of each promise.In comparison, the Promise returned by Promise.all() may be more appropriate if the tasks are dependent on each other / if you'd like to immediately reject upon any of them rejecting.
+
+Example:
+
+```JavaScript
+Promise.allSettled(promises)
+    .then(results => results.forEach(
+        result => {
+            console.log(result.status);
+            console.log(result.status === 'fulfilled' ? result.value : result.reason);
+            console.log("-".repeat(25));
+        }
+    ));
+
+/*
+In console:
+
+fulfilled
+25
+-------------------------
+rejected
+Error: Error 1
+-------------------------
+fulfilled
+50
+-------------------------
+rejected
+Error: Error 2
+-------------------------
+*/
+```
+
+```Promise.any()``` takes in an iterable of promises. It returns a resolved promise as soon as one of the promises in the iterable of promises resolves with the result of the first fulfilled promise. If all promises of the array are rejected, it returns a rejected promise containing an ```AggregateError```, which is a subclass of ```Error``` that contains all the errors of each promise passed in the iterable of promises. The ```AggregateError``` contains a property called ```errors``` that is an array containing all the errors of each rejected promise.
+
+Web MDN Explanation:
+
+> Promise.any() takes an iterable of Promise objects. It returns a single promise that resolves as soon as any of the promises in the iterable fulfills, with the value of the fulfilled promise. If no promises in the iterable fulfill (if all of the given promises are rejected), then the returned promise is rejected with an AggregateError, a new subclass of Error that groups together individual errors.
+
+Example:
+
+```JavaScript
+Promise.any(rejecting_promises)
+    .then(result => console.log(result))
+    .catch(aggregateError => aggregateError.errors.forEach(error => console.log(error.message)));
+
+/*
+In console:
+
+Error 1
+Error 2
+*/
+```
+
+```Promise.race()``` takes in an interable of promises and returns a resolved or rejected promise as soon as a promise from the given iterable settles with the result or error of the first settled promise
+
+Web MDN Explanation:
+
+> The Promise.race() method returns a promise that fulfills or rejects as soon as one of the promises in an iterable fulfills or rejects, with the value or reason from that promise.
+
+Example:
+
+```JavaScript
+Promise.race(promises)
+    .then(result => console.log(result))
+    .catch(error => console.log(error));
+
+/*
+In console:
+
+25
+*/
+```
+
+##### Async/Await
+
+Async and await is syntactical sugar for promises. It lets you write promises in a cleaner way and you don't have to configure promise chains anymore by yourself.
+
+Web MDN Explanation:
+
+> An async function is a function declared with the async keyword, and the await keyword is permitted within them. The async and await keywords enable asynchronous, promise-based behavior to be written in a cleaner style, avoiding the need to explicitly configure promise chains.
+
+Instead of using ```.then()``` on a promise, you can use ```await```. The ```await``` keyword can only be used inside ```async``` functions. ```async``` functions will always return a promise.
+
+Here is an example:
+
+```JavaScript
+async function testAsync(){
+    return 5;
+}
+
+(
+    async () => {
+        const result = await testAsync();
+    }
+)();
+```
+
+This is the same as writing:
+
+```JavaScript
+const promise = Promise.resolve(5);
+promise.then(result => console.log(result));
+```
+
+Here is an example using the ```fetch``` API:
+
+```JavaScript
+(
+    async () => {
+        const response = await fetch("https://jsonplaceholder.typicode.com/users");
+        const result = await response.json();
+
+        console.log(result);
+    }
+)();
+```
+
+This is how you would have to solve this using promise chaining:
+
+```JavaScript
+fetch("https://jsonplaceholder.typicode.com/users")
+    .then(response => response.json())
+    .then(result => console.log(result));
+```
+
+#### The event loop, micro and macro tasks queues, queueMicrotask
+
+Before learning about the event loop, here is how the browser actually looks like:
+
+![Browser representation](FunctionsAndFunctionalAspects/Notes/BrowserRepresentation.PNG)
+
+The event loop pushes all the callback that are enqueued on the callback queue inside the browser onto the call satck. **I does that only when the call stack is completely empty ( including the first global stack frame called main or anonymous )**. 
+The callbacks that get pushed on the callback queue are WebAPIs. Not all WebAPIs get enqueued on the callback queue. **Only asynchornous WebAPIs get pushed onto the callback queue**. Examples are setTimeout, setInterval, the DOM Api, fetch, XHR. But not WebAPIs like console for example, those don't get pushed on the callback queue.
+
+The event loop waits for the call stack to be completely empty so that the callbacks on the callback queue don't just randomly get executed in the middle of a stack frame. In that case we have a clear structure.
+
+Example:
+
+```JavaScript
+console.log("Start.");
+
+setTimeout(
+    () => {
+        console.log("First set timeout executed.");
+    },
+    2000
+);
+
+setTimeout(
+    () => {
+        console.log("Second set timeout executed.");
+    },
+    3000
+);
+
+console.log("End.");
+
+/*
+In console:
+
+Start.
+End.
+First set timeout executed.
+Second set timeout executed.
+*/
+```
+
+The event loop works on the conept "Run to completion". That means that a callback that was pushed on the call stack will have to fully be executed and its stack frame will have to be deleted before we'll push another callback fro mthe callback queue onto the call stack. 
+
+**Zero delay** is a ceoncept of **setTimeout**. The time given for the setTimeout funcition is the ***minimum*** time  before the given callback will be executed. Even if you give the ```setTimeout``` function a tiem of 0 as argument, that doesn't mean that the callback function will be instantly executed, since the callback will be pushed on the callback queue, where it might get blocked by the call stack for some time. Example:
+
+```JavaScript
+setTimeout(
+    () => {
+        console.log("This executed after 3 seconds, because the while loop took 2 seconds to complete.");
+    },
+    1000
+);
+
+const s = new Date().getSeconds();
+
+while (true) {
+    if (new Date().getSeconds() - s >= 2) {
+        console.log("Good, looped for 2 seconds")
+        break;
+    }
+}
+
+/*
+In console:
+
+Good, looped for 2 seconds
+This executed after 3 seconds, because the while loop took 2 seconds to complete.
+*/
+```
+
+In this case the callback given in the ```setTimeout``` function will be executed after 3 seconds, even if the given time was 1 second since the event loop os blocked by the call stack for 2 seconds.
+
+You can also use setTimeout with 0 seconds, that doesn't mean that the function will be executed immediately since it will be pushed on the callback queue:
+
+```JavaScript
+console.log("Start.");
+
+setTimeout(
+    () => {
+        console.log("set timeout executed.");
+    },
+    0
+);
+
+console.log("End.");
+/*
+In console:
+
+Start.
+
+End.
+set timeout executed.
+*/
+```
+
+Previously, I have sais that the event loop in JavaScript is responsible for one queue, the callback queue. **However, there is another queue that the event loop is response for, the microtask queue. The callback queue can also be caleld the macrotask queue.** 
+The difference between a micro and a macro task is that a microtask is a short function that finished quicker than a macrotask.
+In the browser, the microtask queue has priority over the macrotask since tehnically, microtasks, as previously explained, are short functions ( short meaning tha ttheir executin time is very low ) that shouldn't block the event loop for too long.
+
+Here is an overview:
+
+![Full browser representation](FunctionsAndFunctionalAspects/Notes/FullBrowserRepresentation.PNG)
+
+The event loop constantly check if the clal stack is empty. If the call stack is empty, the event loo pchecks on the microtask queue and executes all the microtasks that it contains ( if it's not empty ). Aftewards it checks the macrotask queue and executes all the callbacks that it contains.
+
+All asynchronous WebAPIs are pushed onto the macrotask queue.
+Microtasks are asynchronous operations with higher priority ( ```Promises```, ```MutationObserver```, ```await```, ```Object.observe```, ```process.nextTick``` ). These microtasks are pushed on the microtask queue. When it comes to promises, while the executor callback function is executed immediately, all calblacks given to ```.then``` are enqueued on the microtask queue.
+Microtasks can also be pushed onto the microtask queue by using the WebAPI ```queueMicrotask(callback)```.
+
+Here is an example so you can clearly visualize the difference between micro- and macrotasks and how they are prioritized on the call stack:
+
+```JavaScript
+console.log("Start");
+
+setTimeout(
+    () => console.log("Macrotask 1"),
+    1000
+);
+setTimeout(
+    () => console.log("Macrotask 2"),
+    1000
+);
+
+queueMicrotask(
+    () => console.log("Microtask 1")
+);
+queueMicrotask(
+    () => console.log("Microtask 2")
+);
+
+setTimeout(
+    () => console.log("Macrotask 3"),
+    1000
+);
+setTimeout(
+    () => console.log("Macrotask 4"),
+    1000
+);
+
+Promise.resolve().then(
+    () => console.log("Microtask 3")
+);
+Promise.resolve().then(
+    () => console.log("Microtask 4")
+);
+
+console.log("End");
+
+/*
+In console:
+
+Start
+End
+Microtask 1
+Microtask 2
+Microtask 3
+Microtask 4
+Macrotask 1
+Macrotask 2
+Macrotask 3
+Macrotask 4
+*/
+```
