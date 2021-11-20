@@ -1342,7 +1342,7 @@ Here is the list from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Re
 * returns an already rejected promise, the promise returned by then gets rejected with that promise's value as its value.
 * returns another pending promise object, the resolution/rejection of the promise returned by then will be subsequent to the resolution/rejection of the promise returned by the handler. Also, the resolved value of the promise returned by then will be the same as the resolved value of the promise returned by the handler.
 
-![Promise overview and chaining](FunctionsAndFunctionalAspects/Notes/PromiseOverviewAndChaining.PNG)
+![Promise overview and chaining](FunctionsAndFunctionalAspects/Notes/PromiseOverviewAndChaining.png)
 
 Here is an example:
 
