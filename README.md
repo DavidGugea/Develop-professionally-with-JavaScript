@@ -1743,3 +1743,51 @@ Macrotask 3
 Macrotask 4
 */
 ```
+
+### Functional reactive programming
+
+Reactive programming works with data streams. It works after the observer- or the publish-subscribe-pattern. In order to use reactive programming in JavaScript, you have to use the ```rxjs``` module, which implements functional reactive programming (``` node install rxjs ```)
+
+Here is an example of functional programming: 
+
+```JavaScript
+const array = [
+    '1', 'Max', '2', '3', '4', '5', 'IoT', '6', '7', '8', '9'
+];
+
+const result = array
+    .map(x => parseInt(x))
+    .filter(x => !isNaN(x))
+    .reduce((x, y) => x + y);
+
+console.log(result);
+```
+
+Here is the same result using reactive programming:
+
+```JavaScript
+const Rx = require('rxjs');
+
+const array = [
+    '1', 'Max', '2', '3', '4', '5', 'IoT', '6', '7', '8', '9'
+];
+
+const stream = Rx.Observable.from(array);
+stream
+    .map(x => parseInt(x))
+    .filter(x => !isNaN(x))
+    .reduce((x, y) => x + y)
+    .subscribe(
+        x => console.log(x),
+        error => console.log(error),
+        () => console.log("Done.")
+    );
+```
+
+The ```Observable.from``` method transforms the array into an ```Observable``` object. The stream of data is the mapped, filtered and reduced using functional programming and then reactive programming is used using the ```subscribe``` method where we attach 3 observers ( callback functions ) to each result. The first callback function prints the result out to the console, the second one prints the error out of a console ( in case of an error ) and then, in the end we print ("Done.") to the console.
+
+The way reactive programming is applied to a data stream is different than how functional programming is applied to streams. In functional programming, the functions applied ( like map, reduce, filter, etc... ) are executed synchronously. In our example that would mean that we first map all the values. Then after the mapping we filter all the values. And after filtering all the values we will start reducing all of them to a new value.
+
+That doesn't work in reactive programming. In reactive programming the used methods are executed in an asynchronous manner. That means that for each element we start mapping, filter and reducing it, we don't do it synchronously for all elements like in functional programming. Here is a diagram that visualizes this concept:
+
+![Reactive programming example](FunctionsAndFunctionalAspects/Notes/ReactiveProgrammingExample.PNG)
