@@ -1,4 +1,4 @@
-# Object Oriented Programming in JavaScript ( Chapter 13 )
+# Object Oriented Programming in JavaScript
 ---
 
 ## Introduction
