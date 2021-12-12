@@ -1791,3 +1791,495 @@ The way reactive programming is applied to a data stream is different than how f
 That doesn't work in reactive programming. In reactive programming the used methods are executed in an asynchronous manner. That means that for each element we start mapping, filter and reducing it, we don't do it synchronously for all elements like in functional programming. Here is a diagram that visualizes this concept:
 
 ![Reactive programming example](FunctionsAndFunctionalAspects/Notes/ReactiveProgrammingExample.PNG)
+
+## Chapter 3 : OOP in JavaScript
+
+### Mixins
+
+The idea of mixins is to be able to dynamically implement functionality to class hierarchies.
+
+A naive implementation of mixins, would be to change the prototype of the target object. This is not a good implementation since we only want to dynamically implement certain functionality for one, or eventually more but not all objects.
+
+Here is the example of the naive implementation:
+
+```JavaScript
+function mixing(source, target){
+    for (let property in source){
+        if(source.hasOwnProperty(property)){
+            target[property] = source[property];
+        }
+    }
+}
+
+mixin(Driver.prototype, Person.prototype); // This would change the prototype of person, which is not what a mixin actually is
+```
+
+The write way of using mixins is using the new class syntax:
+
+```JavaScript
+const DrivingMixin = (superclass) => class extends superclass {
+    drive(){
+        console.log("I'm driving.");
+    }
+}
+
+class Person{
+    constructor(firstName, lastName){
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+    sayHello(){
+        console.log("hello");
+    }
+}
+
+const DrivingPerson extends DrivingMixin(Person){}
+
+console.dir(Person); // Remains a normal person, without having its prototype changed
+console.dir(DrivingPerson); // Is like a normal Person class mixed with the drive() method from the DrivingMixin, which makes it to a DrivingPerson
+```
+
+You can also have multiple mixins using the class syntax:
+
+```JavaScript
+const DrivingMixin = (superclass) => class extends superclass {
+    drive(){
+        console.log("I'm driving.");
+    }
+}
+const FlyingMixin = (superclass) => class extends superclass {
+    fly(){
+        console.log("I'm flying.");
+    }
+}
+class Person { // Code }
+
+class DrivingPerson extends DrivingMixin(Person){}
+class FlyingPerson extends FlyingMixin(Person){}
+class FlyingAndDrivingPerson extends FlyingMixin(DrivingMixin(Person)){}
+```
+
+### Encapsulation
+
+**Public properties** are normal properties that are using ```this```:
+
+```JavaScript
+function Employee(firstName, lastName, id){
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.id = id;
+}
+```
+
+**Private properties** however, don't use the ```this``` keyword. They use the ```let``` ( or ```var```, considered obsolete ) keyword.
+
+```JavaScript
+function Employee(firstName, lastName, id){
+    let firstName = firstName;
+    let lastName = lastName;
+    let id = id;
+}
+```
+
+**Privileged public methods** are public since they can be accessed from outside the object and privileged because they have access to private properties.
+
+```JavaScript
+function Employee(firstName, lastName, id){
+    // Private properties
+    let _firstName = firstName;
+    let _lastName = lastName;
+    let _id = id;
+
+    // Privileged public methods
+    this.getFirstName = function(){
+        return _firstName;
+    }
+    this.getLastName = function(){
+        return _lastName;
+    }
+    this.getId = function(){
+        return _id;
+    }
+
+    this.setFirstName = function(newFirstName){
+        _firstName = newFirstName;
+    }
+    this.setLastName = function(newLastName){
+        _lastName = newLastName;
+    }
+    this.setId = function(newId){
+        _id = newId;
+    }
+
+    this.print = function(){
+        return `${_firstName} ${_lastName} ( ${_id} )`;
+    }
+}
+```
+
+**Not privileged public methods** are public since they can be accessed from outside the object but they are not privileged since they don't have access to the private properties.
+
+```JavaScript
+function Employee(firstName, lastName, id){
+    // Private properties
+    let _firstName = firstName;
+    let _lastName = lastName;
+    let _id = id;
+}
+
+Employee.prototype.getFirstName = () => {
+    return this.firstName;
+}
+
+const employee = new Employee("testFirstName", "testLastName", 18);
+console.log(employee.getFirstName()); // undefined
+```
+
+**Private methods** just like private properties don't use the ```this``` keyword and they are written directly in the body of the constructor function
+
+```JavaScript
+function Employee(firstName, lastName, id){
+    // Private properties
+    let _firstName = firstName;
+    let _lastName = lastName;
+    let _id = id;
+
+    // Private methods
+    function getFirstName(){
+        return firstName;
+    }
+}
+
+const employee = new Employee("testFirstName", "testLastName", 18);
+console.log(employee.getFirstName()); // TypeError
+```
+
+### Emulating interfaces
+
+In JavaScript, since we don't have actual interfaces we can use the **Attribute-Checking** strategy. When using this strategy, every object contains an array of strings containing all the method names that the object should implement.
+
+```JavaScript
+const ShoeBox = function(width, depth, height){
+    this.width = width;
+    this.depth = depth;
+    this.height = height;
+    this.implementsInterfaces = ["Box"];
+
+    this.getWidth = function(){
+        return width;
+    }
+    this.getDepth = function(){
+        return depth;
+    }
+    this.getHeight = function(){
+        return height;
+    }
+
+    return {
+        implementsInterfaces : this.implementsInterfaces,
+        getWidth : this.getWidth,
+        getDepth : this.getDepth,
+        getHeight : this.getHeight
+    }
+}
+
+const implements = (object, interfaceToImplement) => object.implementsInterfaces.includes(interfaceToImplement) ? true : false;
+
+function calculateVolume(box){
+    let volume = 0;
+    if(implements(box, "Box")){
+        volume = box.getWidth() * box.getDepth() * box.getHeight();
+        return volume;
+    }else{
+        throw new Error("The object doesn't implement the needed interface");
+    }
+}
+```
+
+### Emulating Namespaces
+
+In order to avoid name conflicts and emulate namespaces in javascript you can create a singleton container that contains all of your objects. You can even nest multiple namespaces ( containers ) inside of the main singleton container in order to structure your code better.
+
+Here is an example:
+
+```JavaScript
+const Validator = {}; 
+Validator.format = "HTML5";
+Validator.validate = function(){
+    console.log(`Validation started : ${this.format}`);
+}
+```
+
+As I've said previously, you can also nest multiple namespaces inside each other:
+
+```JavaScript
+/*
+const de = {};
+de.philipackermann = {};
+de.philipackermann.javascript = {};
+
+OR:
+*/
+
+const de = {
+    philipackermann : {
+        javascript : {}
+    }
+};
+```
+
+### Emulating Modules
+
+In order to emulate modules you can use the module design pattern that combines closures and IIFEs. Here is an example of the classical module design pattern:
+
+```JavaScript
+const ValidatorModule = ( 
+    () => {
+        // Private variable
+        let format = "HTML5";
+
+        // public API
+        return {
+            // public method
+            validate : function(){
+                console.log(`Starting validation : ${format}`);
+            }
+        }
+    }
+)();
+```
+
+The classical module design pattern doesn't allow you to safely have private methods or references to private methods. By using the **Revealing-Module Design Pattern** you make all the methods private and return in the public API only references to those private methods.
+
+Here is the example using the classical module design pattern:
+```JavaScript
+// Example using the module design pattern ( combination between closures and IIFEs ), not the reavealing module design pattern 
+const ValidatorModule = (
+    () => {
+        let format = "HTML5";
+
+        return {
+            validate : function(){
+                console.log(`Starting validation : ${format}`);
+                ValidatorModule.validationFinished();
+            },
+            validationFinished : function(){
+                console.log(`Validation finished : ${format}`);
+            }
+        }
+    }
+)();
+
+ValidatorModule.validate();
+```
+
+Here is the example with the **Revealing-Module Design Pattern** 
+```JavaScript
+const ValidatorModule = (
+    () => {
+        // private properties
+        let format = "HTML5";
+
+        // private methods
+        function validate(){
+            console.log(`Validation started : ${format}`);
+            validationFinished();
+        }
+
+        function validationFinished(){
+            console.log(`Validation finished : ${format}`);
+        }
+
+        // public API
+        return {
+            // public reference on the private method
+            validate : validate
+        }
+    }
+)();
+
+ValidatorModule.validate();
+```
+
+**In order to import modules you can give them as arguments inside the IIFEs.**
+
+```JavaScript
+const PersistenceModule = (
+    () => {
+        function saveResults(results){
+            console.log(`Saving results : ${results}`);
+        }
+
+        return {
+            saveResults : saveResults
+        }
+    }
+)();
+
+const ValidatorModule = (
+    (persistenceModule) => {
+        let format = "HTML5";
+        let results = [];
+
+        function validate(){
+            console.log(`Validation started : ${format}`);
+            results.push("Test completed.");
+            persistenceModule.saveResults(results);
+        }
+        function getResults(){
+            return results;
+        }
+
+        return {
+            validate : validate,
+            getResults : getResults
+        }
+    }
+)(PersistenceModule);
+
+ValidatorModule.validate();
+```
+
+**Module augmentation** describes dynamically adding functionality to a module without changing its source code. An example:
+
+```JavaScript
+// Loose augmentation
+const ValidatorModule = (
+    (module) => {
+        let format = "HTML5";
+
+        module.results = [];
+        module.validate = function(){
+            console.log(`Validation started : ${format}`);
+            module.results.push("Test compelted.");
+        }
+
+        module.getResults = function(){
+            return results;
+        }
+
+        return module;
+    }
+)(ValidatorModule || {});
+
+/*
+This approach allows us to extend our modules without the need to change the
+original implementation. There are different techniques which can be used to
+implement module augmentation, and we will cover a couple of them in this chapter.
+
+Module augmentation can be very useful when working on projects that have many
+contributors to the code base. This type of projects usually require us to extend our
+modules by adding new code and functionality to what has been already developed
+by other developers.
+*/
+```
+
+### Module syntax
+
+ES2015 has added module syntax. That means that you can use ```import``` and ```export``` in order to use modules.
+
+There are 2 types of exports : named and default exports. You can import or export multiple named exports at a time, rename them, etc. but you can only import/export one single default export at a time.
+Keep in mind that you need some kind of web server in order to import/export modules and you need to add ```type="module"``` inside your package-json or ```<script></script>``` tag when using modules.
+
+Example:
+
+```JavaScript
+// Logger.js
+export function info(info){
+    console.log(info);
+}
+
+export function debug(debugInfo){
+    console.debug(debugInfo);
+}
+
+export function warn(warnInfo){
+    console.warn(warnInfo);
+}
+
+export function error(errorInfo){
+    console.error(errorInfo);
+}
+```
+
+These are all named exports. If I want to import all of them I can use the ```import``` syntax:
+
+```JavaScript
+// main.js
+import { info, debug, warn, error } from "logger";
+
+info(4711);
+debug(4711);
+warn(4711);
+error(4711);
+```
+
+Default exports, as I've said before can only be imported/exported as  individual components. Example:
+
+```JavaScript
+export default class Album{
+    constructor(artist, title, year){
+        this.artist = artist;
+        this.title = title;
+        this.year = year;
+    }
+}
+```
+
+If you now want to import this ```Album``` you will have to import it individually:
+
+```JavaScript
+import Album from "Album";
+
+let album = new Album("Monster Magnet", "Dopes of Infinity", 1994);
+console.dir(album);
+```
+
+You can also change the names of import/exports.
+
+Here are some example from web-mdn:
+
+```JavaScript
+// Exporting individual features
+export let name1, name2, …, nameN; // also var, const
+export let name1 = …, name2 = …, …, nameN; // also var, const
+export function functionName(){...}
+export class ClassName {...}
+
+// Export list
+export { name1, name2, …, nameN };
+
+// Renaming exports
+export { variable1 as name1, variable2 as name2, …, nameN };
+
+// Exporting destructured assignments with renaming
+export const { name1, name2: bar } = o;
+
+// Default exports
+export default expression;
+export default function (…) { … } // also class, function*
+export default function name1(…) { … } // also class, function*
+export { name1 as default, … };
+
+// Aggregating modules
+export * from …; // does not set the default export
+export * as name1 from …; // Draft ECMAScript® 2O21
+export { name1, name2, …, nameN } from …;
+export { import1 as name1, import2 as name2, …, nameN } from …;
+export { default, … } from …;
+```
+
+Same goes for importing:
+
+```JavaScript
+import defaultExport from "module-name";
+import * as name from "module-name";
+import { export1 } from "module-name";
+import { export1 as alias1 } from "module-name";
+import { export1 , export2 } from "module-name";
+import { export1 , export2 as alias2 , [...] } from "module-name";
+import defaultExport, { export1 [ , [...] ] } from "module-name";
+import defaultExport, * as name from "module-name";
+import "module-name";
+var promise = import("module-name");
+```
