@@ -2283,3 +2283,378 @@ import defaultExport, * as name from "module-name";
 import "module-name";
 var promise = import("module-name");
 ```
+
+## Chapter 4 : ECMA 2015 and newer version
+
+### Flexible Parameters
+
+In order to get default values for arguments in JavaScript, you can either give them a default value in the arguments parantheses when building the function or you can use the ```||``` operator. Example:
+
+```JavaScript
+function createPerson(firstName, lastName){
+    firstName = firstName || "defaultFirstName";
+    lastName = lastName || "defaultLastName";
+
+    return {
+        firstName : firstName,
+        lastName: lastName,
+    }
+}
+```
+
+```firstName``` will be either the given ```firstName``` or ```defaultFirstName```, if the given ```firstName``` is undefined.
+
+When a function needs a lot of arguments, it's easy to forget the exact order, that's why you can use a configuration object as an argument that contains all the argument that you need:
+
+```JavaScript
+function createPerson(config){
+    return {
+        firstName : config.firstName,
+        lastName : config.lastName,
+        height : config.height,
+        weight : config.weight,
+        dayOfBirth : config.dayOfBirth,
+        monthOfBirth : config.monthOfBirth,
+        yearOfBirth : config.yearOfBirth
+    }
+}
+
+
+let person = createPerson(
+    {
+        firstName : "testFirstName",
+        lastName : "testLastName",
+        height : 175,
+        weight : 80,
+        dayOfBirth : "testDayOfBirth",
+        monthOfBirth : "testMonthOfBirth",
+        yearOfBirth : "testYearOfBirth"
+    }
+);
+
+console.dir(person);
+```
+
+### Destructuring
+
+Array destructuring is a very common technique used in order to extract values from an array in a very clean way. Here is an example:
+
+```JavaScript
+const testArray = [1, 2, 3, 4];
+
+const [
+    item1,
+    item2,
+    item3,
+    item4
+] = testArray;
+```
+
+You can order use array destructuring with rest parameters:
+
+```JavaScript
+const testArray = [
+    1, 2, 3, 4, 5, 6, 7, 8, 9
+];
+
+const [ firstNumber, ...restNumbers ] = testArray;
+```
+
+Just like array destructuring you can also use object destructuring in order to extract properties/methods from an object into variables:
+
+```JavaScript
+const person = {
+    firstName : "testFirstName",
+    lastName : "testLastName",
+    address : {
+        postalCode : 23456,
+        street : "testStreetName 11"
+    }
+};
+
+const {
+    firstName : firstNameExtracted,
+    lastName : lastNameExtracted,
+    address : {
+        // postalCode = postalCodeExtracted
+        street: streetExtracted
+    }
+} = person;
+```
+
+### Iterators and Generators
+
+A generator in javascript works like a generator in Python. You need to add a ```*``` after every function that is a generator in order to denote that it behaves like one. You also have to use ```yield``` in order to generate values.
+A generator has, by default, the ```next()``` function.
+
+Example:
+
+```JavaScript
+function* yieldInRange(rangeStart, rangeEnd, rangeStep, skipFirst=false){
+  for(let i = rangeStart ; i < rangeEnd ; i += rangeStep){
+    if(skipFirst && i === rangeStart){
+      continue;
+    }
+    
+    yield i;
+  }
+}
+
+const generator = yieldOneThenTwo(0, 100, 10, true);
+
+let result = generator.next();
+while(!result.done){
+  console.log(`-- > ${result.value}`);
+  result = generator.next();
+}
+```
+
+An iterator represents a wrapper around an iterable object. It allows you to iterate over an object in specific ways.
+
+```JavaScript
+const artists = [
+    "artist1",
+    "artist2",
+    "artist3",
+    "artist4",
+];
+
+const iterator = artists.entries();
+let artist = iterator.next();
+
+while (!artist.done) {
+    console.log(artist);
+    let artist = iterator.next();
+}
+```
+
+You can always change the way you can iterate over an iterable object by using a wrapper:
+
+```JavaScript
+const artists = [
+  "artist1",
+  "artist2",
+  "artist3",
+  "artist4",
+];
+const artistsWrapper = {}
+artistsWrapper.artists = artists;
+
+artistsWrapper[Symbol.iterator] = function(){
+  const artists = this.artists;
+  let counter = this.artists.length - 1;
+
+  // Return value of the iterator;
+  return {
+    next(){
+      if ( counter < 0) {
+        return {
+          done : true
+        };
+      }else{
+        return {
+          value : artists[counter--],
+          done : false
+        };
+      }
+    }
+  }
+};
+
+const iterator = artistsWrapper[Symbol.iterator]();
+let artist = iterator.next();
+while(!artist.done){
+  console.log(artist);
+  artist = iterator.next();
+}
+```
+
+### Proxies
+
+A proxy is an object that wraps another object inside of it and changes the way it interacts with the outside world. A proxy object needs a ```target``` argument, that represents the object that will get wrapped around and a ```handler``` object that represents the wrapper of the ```target``` object. 
+
+```handler.get(target, property, proxy)``` and ```handler.set(target, property, value, proxy)``` are trap methods that allow you to handle how certain properties/methods from the target object interact with the outside world.
+
+Here is an example of a simple proxy:
+
+```JavaScript
+const target = {
+    message1 : "testMessage1",
+    message2 : "testMessage2"
+};
+
+const handler1 = {
+    get: function(target, property, receiver){
+        if(property === "message1"){
+            return "This is a new return value for the >message1< property";
+        }
+
+        return Reflect.get(...arguments);
+    }
+};
+
+const proxy1 = new Proxy(target, handler1);
+
+console.log(proxy1.message1);
+console.log(proxy1.message2);
+```
+
+You can also use a proxy in order to validate input that comes into the handler object. This is called a validation proxy:
+
+```JavaScript
+const validationProxyHandler = {
+    get(target, property, proxy){
+        if(property === "firstName" || property === "lastName"){
+            console.log("Getting the firstName or the lastName.");
+        }else if(property === "age"){
+            console.log("Getting the age.");
+        }
+        
+        return target[property];
+    },
+    set(target, property, value, proxy){
+        if(property === "firstName" || property === "lastName"){
+            if(typeof value === "string"){
+                console.log(`Setting the firstName or the lastName to ${value}`);
+                target[property] = value;
+            }else{
+                throw new TypeError(`The type of the property ${property} must be a string`);
+            }
+        }else if(property === "age"){
+            if(typeof value === "number"){
+                console.log(`Setting the age to ${value}`);
+                target[property] = value;
+            }else{
+                throw new TypeError(`The type of the property ${property} must be a number`);
+            }
+        }
+    }
+}
+
+class Person{
+    constrcutor(firstName, lastName, age){
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.age = age;
+    }
+}
+
+const person = new Proxy(
+    new Person("testFirstName", "testLastName", 23),
+    validationProxyHandler
+);
+
+const firstNameTest = person.firstName;
+const lastNameTest = person.lastName;
+const ageTest = person.age;
+
+person.firstName = "testFirstName2";
+person.lastName = "testLastName2";
+person.age = 27;
+```
+
+### Collections
+
+Maps are key-value objects in JavaScript. Example:
+
+```JavaScript
+const testMap = new Map();
+testMap.set("key1", "value1");
+testMap.set("key2", "value2");
+testMap.set("key3", "value3");
+
+console.log(testMap.keys());
+console.log(testMap.values());
+console.log(testMap.entries());
+```
+
+Sets in JavaScript are just like sets in Python. They are collections that only allow unique items. Example:
+
+```JavaScript
+const testSet = new Set();
+testSet.add(1);
+testSet.add(2);
+testSet.add(3);
+testSet.add("1");
+testSet.add("2");
+testSet.add("3");
+
+for(let value of testSet){
+    console.log(value); // 1, 2, 3, "1", "2", "3"
+}
+```
+
+WeakMaps and WeakSets are just like normal maps and sets but they change the way the garbage collector interacts with them. If there is no reference to a certain item in a map or set, the garbage collection will delete them.
+WeakMaps and WeakSets don't have the ```keys()```, ```values()```, ```entries()``` methods or the or the ```size``` property.
+
+### Tagged Templates
+
+You can change the way a string interacts with its templates by using tagged templates:
+
+```JavaScript
+const value1 = 5;
+const value2 = "testValue2";
+
+const tagFunction = (string, ...values) => {
+    console.log(string);
+    console.log(values);
+}
+
+const message = tagFunction`Value 1 -- > ${value1} || Value 2 -- > ${value2}`;
+```
+
+### Symbols
+
+Symbols in JavaScript are seen as primitive data types. You can't instantiate a symbol with the keyword ```new()``` just like you would do with any other object. Symbols are primitive data types in JavaScript. 
+When you create a symbol you can give it only one single argument and that is the symbol description. Example:
+
+```JavaScript
+const symbol = Symbol("This is the description for the symbol I've just created.");
+```
+
+You can also create two symbols with the same description in this way and you will see that they are not seen as the same symbol:
+
+```JavaScript
+const symbol_1 = Symbol("This is the description for the symbol I've just created.");
+const symbol_2 = Symbol("This is the description for the symbol I've just created.");
+
+console.log(symbol_1 === symbol_2); // false
+```
+
+The reason why they are not seen the same is because they are stored in 2 different variables.
+
+In JavaScript we have the **Global Symbol Registry ( GSR )** which is a map with key-value pairs. Each key represents the symbol description of a symbol and the value is the symbol itself. A cleaner way of working with symbols is using the GSR.
+
+There are 2 special methods that can be used by the Symbol data type: for and keyFor.
+
+```Symbol.for()``` works just like ```setdefault()``` in python dicts. You must give it the symbol description as an argument. If the symbol description will be found in the GSR-keys then you will get the value back, which is the symbol that had that symbol description. Otherwise, if the symbol description hasn't been found in the GSR-keys, a new symbol will be added inside the GSR with the symbol description as its key and the symbol itself as the value. Example:
+
+```JavaScript
+const symbol = Symbol.for("symbol description");
+const another_symbol = Symbol.for("symbol description");
+
+console.log(symbol === another_symbol); // true
+```
+
+In this case, the symbols will be the same since another_symbol uses Symbol.for() with the same description as symbol, that means that Symbol.for() will return the first symbol that used that description, which in our case is ```symbol```, so ```another_symbol``` will be the exact same as ```symbol```.
+
+```Symbol.keyFor()``` is the opposite of ```Symbol.for()```. You have to give it the symbol as its value and it will search for it inside the GSR values and will return it's key, if found. The key will be, of course, the symbol description of the given symbol.
+
+We can use symbols in order to make values more private inside objects. That means that we can use symbols as special properties so we can't access them through iteration ( just like properties that have the ```enumerable``` property set to false )
+
+```JavaScript
+const symbol = Symbol.for("SYMBOL DESCRIPTION");
+
+const object = {
+    property_1 : "value_1",
+    property_2 : "value_2",
+    [symbol] : 17
+};
+
+for(let key in object){
+    console.log(`KEY -- > ${key} || VALUE -- > ${object[key]}`);
+    // [symbol] won't be shown here
+}
+
+console.log(object[symbol]); // 17
+```
