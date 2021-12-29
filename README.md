@@ -2658,3 +2658,7 @@ for(let key in object){
 
 console.log(object[symbol]); // 17
 ```
+
+## Chapter 5 : The development process
+
+Tools used for the development process ( linting, package managers, scaffolding, documentation, minification, obfuscation, etc. )
