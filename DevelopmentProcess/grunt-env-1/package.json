@@ -1,0 +1,16 @@
+{
+  "name": "grunt-env-1",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ./src/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "grunt": "^1.4.1",
+    "grunt-contrib-uglify": "^5.0.1"
+  }
+}

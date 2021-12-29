@@ -1,0 +1,1 @@
+import{sum}from"./test.js";console.log(sum(5,7));

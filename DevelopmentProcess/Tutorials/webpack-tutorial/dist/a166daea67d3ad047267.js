@@ -1,0 +1,1 @@
+const sum=(s,m)=>s+m;export{sum};
