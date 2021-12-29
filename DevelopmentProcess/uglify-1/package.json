@@ -1,0 +1,15 @@
+{
+  "name": "uglify-1",
+  "version": "1.0.0",
+  "description": "Uglify Compression",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ./src/index.js"
+  },
+  "keywords": [],
+  "author": "David G.",
+  "license": "MIT",
+  "devDependencies": {
+    "uglify-js2": "^2.1.11"
+  }
+}

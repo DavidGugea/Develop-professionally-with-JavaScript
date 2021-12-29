@@ -1,0 +1,12 @@
+{
+    "opts": {
+        "encoding": "utf-8",
+        "destination": "./doc"
+    },
+    "source": {
+        "include": ["./src/index.js"]
+    },
+    "plugins": [
+        "plugins/markdown"
+    ]
+}

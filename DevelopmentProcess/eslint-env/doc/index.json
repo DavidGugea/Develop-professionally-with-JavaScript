@@ -1,0 +1,66 @@
+[
+  {
+    "__docId__": 0,
+    "kind": "file",
+    "name": "src/index.js",
+    "content": "const _ = require(\"lodash\");\r\n\r\n/**\r\n * @type {Array} - An array of numbers from 0 to 100\r\n */\r\nlet array = [];\r\n\r\nfor (let i = 0; i <= 100; i++) {\r\n    array.push(i);\r\n}\r\n\r\n_.each(\r\n    array,\r\n    (value, index) => {\r\n        console.log(`| ${value} < -- > ${index} |`);\r\n    }\r\n)",
+    "static": true,
+    "longname": "C:/Users/david/Desktop/Coding/JS-CACHE/eslint-env-1/src/index.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 1,
+    "kind": "variable",
+    "name": "_",
+    "memberof": "src/index.js",
+    "static": true,
+    "longname": "src/index.js~_",
+    "access": null,
+    "export": false,
+    "importPath": "eslint-env-1/src/index.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 1,
+    "undocument": true
+  },
+  {
+    "__docId__": 2,
+    "kind": "variable",
+    "name": "array",
+    "memberof": "src/index.js",
+    "static": true,
+    "longname": "src/index.js~array",
+    "access": null,
+    "export": false,
+    "importPath": "eslint-env-1/src/index.js",
+    "importStyle": null,
+    "description": "",
+    "lineNumber": 6,
+    "type": {
+      "nullable": null,
+      "types": [
+        "Array"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "kind": "index",
+    "content": "",
+    "longname": "C:\\Users\\david\\Desktop\\Coding\\JS-CACHE\\eslint-env-1\\README.md",
+    "name": "./README.md",
+    "static": true,
+    "access": "public"
+  },
+  {
+    "kind": "packageJSON",
+    "content": "{\n  \"name\": \"eslint-env-1\",\n  \"version\": \"1.0.0\",\n  \"description\": \"ESLint Doc Env\",\n  \"main\": \"index.js\",\n  \"scripts\": {\n    \"start\": \"node ./src/index.js\",\n    \"golive\": \"live-server ./src/index.html\",\n    \"mon\": \"nodemon ./src/index.js\"\n  },\n  \"keywords\": [],\n  \"author\": \"David G.\",\n  \"license\": \"MIT\",\n  \"dependencies\": {\n    \"lodash\": \"^4.17.21\"\n  },\n  \"devDependencies\": {\n    \"@enterthenamehere/esdoc-standard-plugin\": \"^2.2.4\",\n    \"esdoc\": \"^1.1.0\"\n  }\n}\n",
+    "longname": "C:\\Users\\david\\Desktop\\Coding\\JS-CACHE\\eslint-env-1\\package.json",
+    "name": "package.json",
+    "static": true,
+    "access": "public"
+  }
+]

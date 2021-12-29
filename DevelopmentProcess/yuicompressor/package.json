@@ -1,0 +1,16 @@
+{
+  "name": "yuicompressor-1",
+  "version": "1.0.0",
+  "description": "Yui Compressor Test",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ./src/index.js",
+    "compress": "node ./src/compressor/compress.js"
+  },
+  "keywords": [],
+  "author": "David G.",
+  "license": "MIT",
+  "devDependencies": {
+    "yuicompressor": "^2.4.8"
+  }
+}

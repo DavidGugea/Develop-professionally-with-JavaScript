@@ -1,0 +1,21 @@
+{
+  "name": "eslint-env-1",
+  "version": "1.0.0",
+  "description": "ESLint Doc Env",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ./src/index.js",
+    "golive": "live-server ./src/index.html",
+    "mon": "nodemon ./src/index.js"
+  },
+  "keywords": [],
+  "author": "David G.",
+  "license": "MIT",
+  "dependencies": {
+    "lodash": "^4.17.21"
+  },
+  "devDependencies": {
+    "@enterthenamehere/esdoc-standard-plugin": "^2.2.4",
+    "esdoc": "^1.1.0"
+  }
+}
