@@ -16,6 +16,6 @@
   },
   "devDependencies": {
     "@enterthenamehere/esdoc-standard-plugin": "^2.2.4",
-    "esdoc": "^1.1.0"
+    "@enterthenamehere/esdoc": "^2.2.4"
   }
 }
