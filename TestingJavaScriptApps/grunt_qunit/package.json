@@ -1,0 +1,18 @@
+{
+  "name": "grunt_qunit",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "grunt": "^1.4.1",
+    "grunt-contrib-qunit": "^5.1.1",
+    "qunit": "^2.17.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
