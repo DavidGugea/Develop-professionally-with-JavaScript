@@ -1,0 +1,13 @@
+C:\Users\david\Desktop\Coding\JS-CACHE\Develop-professionally-with-JavaScript\AdvancedConceptsInTheObjectOrientedProgramming\SOLID\CSharpExamples\OCPLibrary\bin\Debug\netcoreapp3.1\OCPLibrary.exe
+C:\Users\david\Desktop\Coding\JS-CACHE\Develop-professionally-with-JavaScript\AdvancedConceptsInTheObjectOrientedProgramming\SOLID\CSharpExamples\OCPLibrary\bin\Debug\netcoreapp3.1\OCPLibrary.deps.json
+C:\Users\david\Desktop\Coding\JS-CACHE\Develop-professionally-with-JavaScript\AdvancedConceptsInTheObjectOrientedProgramming\SOLID\CSharpExamples\OCPLibrary\bin\Debug\netcoreapp3.1\OCPLibrary.runtimeconfig.json
+C:\Users\david\Desktop\Coding\JS-CACHE\Develop-professionally-with-JavaScript\AdvancedConceptsInTheObjectOrientedProgramming\SOLID\CSharpExamples\OCPLibrary\bin\Debug\netcoreapp3.1\OCPLibrary.runtimeconfig.dev.json
+C:\Users\david\Desktop\Coding\JS-CACHE\Develop-professionally-with-JavaScript\AdvancedConceptsInTheObjectOrientedProgramming\SOLID\CSharpExamples\OCPLibrary\bin\Debug\netcoreapp3.1\OCPLibrary.dll
+C:\Users\david\Desktop\Coding\JS-CACHE\Develop-professionally-with-JavaScript\AdvancedConceptsInTheObjectOrientedProgramming\SOLID\CSharpExamples\OCPLibrary\bin\Debug\netcoreapp3.1\OCPLibrary.pdb
+C:\Users\david\Desktop\Coding\JS-CACHE\Develop-professionally-with-JavaScript\AdvancedConceptsInTheObjectOrientedProgramming\SOLID\CSharpExamples\OCPLibrary\obj\Debug\netcoreapp3.1\OCPLibrary.csprojAssemblyReference.cache
+C:\Users\david\Desktop\Coding\JS-CACHE\Develop-professionally-with-JavaScript\AdvancedConceptsInTheObjectOrientedProgramming\SOLID\CSharpExamples\OCPLibrary\obj\Debug\netcoreapp3.1\OCPLibrary.AssemblyInfoInputs.cache
+C:\Users\david\Desktop\Coding\JS-CACHE\Develop-professionally-with-JavaScript\AdvancedConceptsInTheObjectOrientedProgramming\SOLID\CSharpExamples\OCPLibrary\obj\Debug\netcoreapp3.1\OCPLibrary.AssemblyInfo.cs
+C:\Users\david\Desktop\Coding\JS-CACHE\Develop-professionally-with-JavaScript\AdvancedConceptsInTheObjectOrientedProgramming\SOLID\CSharpExamples\OCPLibrary\obj\Debug\netcoreapp3.1\OCPLibrary.csproj.CoreCompileInputs.cache
+C:\Users\david\Desktop\Coding\JS-CACHE\Develop-professionally-with-JavaScript\AdvancedConceptsInTheObjectOrientedProgramming\SOLID\CSharpExamples\OCPLibrary\obj\Debug\netcoreapp3.1\OCPLibrary.dll
+C:\Users\david\Desktop\Coding\JS-CACHE\Develop-professionally-with-JavaScript\AdvancedConceptsInTheObjectOrientedProgramming\SOLID\CSharpExamples\OCPLibrary\obj\Debug\netcoreapp3.1\OCPLibrary.pdb
+C:\Users\david\Desktop\Coding\JS-CACHE\Develop-professionally-with-JavaScript\AdvancedConceptsInTheObjectOrientedProgramming\SOLID\CSharpExamples\OCPLibrary\obj\Debug\netcoreapp3.1\OCPLibrary.genruntimeconfig.cache

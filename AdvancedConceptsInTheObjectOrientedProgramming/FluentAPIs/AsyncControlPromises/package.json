@@ -1,0 +1,12 @@
+{
+  "name": "AsyncControlPromises",
+  "version": "1.0.0",
+  "description": "",
+  "main": "FluentAsyncControlPromises.js",
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

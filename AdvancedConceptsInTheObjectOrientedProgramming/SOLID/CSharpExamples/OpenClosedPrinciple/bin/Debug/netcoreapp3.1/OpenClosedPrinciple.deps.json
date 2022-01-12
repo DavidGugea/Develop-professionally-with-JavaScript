@@ -1,0 +1,36 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v3.1",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v3.1": {
+      "OpenClosedPrinciple/1.0.0": {
+        "dependencies": {
+          "OCPLibrary": "1.0.0"
+        },
+        "runtime": {
+          "OpenClosedPrinciple.dll": {}
+        }
+      },
+      "OCPLibrary/1.0.0": {
+        "runtime": {
+          "OCPLibrary.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "OpenClosedPrinciple/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "OCPLibrary/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
