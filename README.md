@@ -2662,3 +2662,272 @@ console.log(object[symbol]); // 17
 ## Chapter 5 : The development process
 
 Tools used for the development process ( linting, package managers, scaffolding, documentation, minification, obfuscation, etc. )
+
+## Chapter 6 : Testing JavaScript applications
+
+TDD and BDD Testing
+
+## Chapter 7 : Advanced concepts in the object-oriented programming
+
+### SOLID Principles
+
+### 1. Single Responsibility Principle ( SRP )
+
+The **Single Responsibility Principle** states that **a class should only be responsible for one thing**. The class should only have one job.
+
+If you are buildling an Entity class called *Person*, the *Person* class should only describe the entity, if you also want to integrate that into a database, you should not have methods that do that inside the *Person* class, since that would violate *SRP*. You should build another class called *PersonRepository* for example that would handle persistent data using the *Person* entity class. 
+In this way you can keep track of your classes better and structure your code so that it is easy to maintain and debug. **It is better to have more smaller classes than one big one that handles everything**.
+
+Here is an image that summarizes *SRP*:
+
+![Single Responsibility Principle](AdvancedConceptsInTheObjectOrientedProgramming/SOLID/ScreenshotsForNotes/SingleResponsibility.PNG)
+
+### 2. Open Closed Principle ( OCP )
+
+The **Open Closed Principle** states that **classes should be open for extension but closed for modification**. This means that if you have a class *you should always be able to extend that class in any way possible without having to make changes to other methods that were already in the class*. 
+By using *OCP* it is also very easy to use module augmentation.
+***OCP* means that you can add new functionality to your class without modifying already existing code.**
+
+Here is an image that summarizes *OCP*:
+
+![Open Closed Principle](AdvancedConceptsInTheObjectOrientedProgramming/SOLID/ScreenshotsForNotes/OpenClosed.PNG)
+
+### 3. Liskov Subsitution Principle ( LSP )
+
+The **Liskov Substituion Principle** states that **you should be able to change an instance using a sub-type and everything should still work as expected**.
+This means that if you have for example an instance of the class ```Car```, you should be able to change the instance's type to a sub-type of ```Car```, for example ```ElectricCar``` and everything should be working as expected.
+For example, if you decide to add a method called ```shift()``` to the ```Car``` class, that would violate *LSP*, since the class ```ElectricCar``` can't implement the ```shift()``` method, so you would have to throw an error for that method.
+**You should always be able to change the type of an instance to a sub-type and everything should still work**.
+
+Here is an image that summarizes *LSP*:
+
+![Liskov Subsitution Principle](AdvancedConceptsInTheObjectOrientedProgramming/SOLID/ScreenshotsForNotes/LiskovSubsitution.PNG)
+
+### 4. Interface Segregation Principle ( ISP )
+
+The **Interface segregation principle** states that **software components shouldn't be dependent on interfaces that they can't implement or don't need**. 
+This means that it is always better to have more smaller interfaces that bigger onces, since you might not be able to integrate does interfaces into all of your components since they aren't that flexible.
+In our previous example where we were talking about the *LSP*, in order to solve the problem with the ```ElectricCar``` class and the ```shift()``` method, you could build two interfaces/classes called ```Combustion``` ( that would have the ```shift()``` method ) and ```Electric``` ( that won't have the ```shift()``` method ).
+
+Here is an image that summarizes *ISP*:
+
+![Interface Segregation Principle](AdvancedConceptsInTheObjectOrientedProgramming/SOLID/ScreenshotsForNotes/InterfaceSegregation.PNG)
+
+### 5. Dependency Inversion Principle ( DIP )
+
+The **Dependecy Inversion Principle** states that **entities must depend on abstraction, not on concrections. It states that the high-level module must not depend on the low-level module, but they should depend on abstractions. Abstractions should not depend upon details. Details should depend upon abstractions**.
+
+A high-level module is a software component/an entity that depends on another software component/another entity in order to function properly. A low-level module however, does not depend on any other software component/on any other entity in order to function properly.
+In layman terms:
+**A high-level module: class that executes an action with the help of something else**
+**A low-level module: a software component/entity that is used by other software components in order for them to function properly**.
+**The high level module is a thing that needs a tool in order to function. A low level module is that tool**.
+
+Before we go into explaining *DIP* let's talk about the following things:
+
+* IoC ( Inversion of control )
+* DI ( Dependency Injection )
+* Constructor Injection
+* Field injection
+* Setter injection
+
+### IoC
+
+IoC ( Inversion of Control ) is a programming principle that inverts the flow of control. Here is the structure of IoC:
+
+![IoC Structure](AdvancedConceptsInTheObjectOrientedProgramming/SOLID/ScreenshotsForNotes/IoCStructure.PNG)
+
+### DI
+
+DI ( Dependency Injection ) uses the IoC principle by ensuring that classes are not responsible for their dependencies and for their lifetime.
+
+*IoC* is however, not *Dependecy Injection*. 
+*IoC* is implemented in other software practices as well:
+
+* A windowed application using event handler functions/methods to handle mouse/keyboard input events.
+* An MVC web application using Controller Actions to handle HTTP requests.
+* A message passing via a Mediator or Message pump to trigger event handlers.
+
+### Constructor Injection
+
+Constructor Injection is a type of DI where the dependencies are injected inside the constructor of your high level module.
+
+Example:
+
+```C#
+public class SomeClass{
+    private Dependecy neededDependency;
+
+    public SomeClass(Dependecy neededDependency){
+        this.neededDependency = neededDependency;
+    }
+}
+
+public class MainClass{
+    public void Main(string[] args){
+        Dependency dependency = new Dependency();
+        SomeClass myClass = new SomeClass(dependency);
+    }
+}
+```
+
+### Field injection 
+
+Field injection is a type of DI where the dependecies are injected inside a public property/field of a class. Example:
+
+```C#
+public class SomeClass{
+    public Dependecy neededDependency;
+}
+
+public class MainClass{
+    public void Main(string[] args){
+        Dependency dependency = new Dependency();
+        SomeClass myClass = new SomeClass()
+        myClass.neededDependency = dependency;
+    }
+}
+```
+
+### Setter injection
+
+A setter injection is a type of DI where the dependecies are injected via a public setter. Example:
+
+```C#
+public class SomeClass
+{
+    private Dependency _neededDependency;
+    public Dependency neededDependency
+    {
+        set
+        {
+            this._neededDependency = value;
+        }
+        get
+        {
+            return this._neededDependency;
+        }
+    }
+}
+
+public class MainClass{
+    public void Main(string[] args){
+        Dependency dependency = new Dependency();
+        SomeClass myClass = new SomeClass()
+        myClass.neededDependency = dependency;
+    }
+}
+```
+
+We can make sure that we don't violate **Dependency Inversion Principle** by using **Dependency Injection with some extra steps**.
+When we talk about *DIP*, we also need to know that we **must implement abstraction**. 
+Here is an example where *DIP* is violated, even though we have used *DI*:
+
+```C#
+class Foo{
+    private MySqlDatabase database;
+
+    public Foo(MySqlDatabase database){
+        this.database = database;
+    }
+}
+```
+
+In this example, even though we have used *DI*, which now means that we are not violating the fact that high-level modules should not directly depend in low-level modules, we are still violating *DIP* because we are not depending on abstraction when it comes to low-level modules.
+**When using *DIP* we should always know that we must depend on abstraction**. 
+In this case, we have used a concrete class ```MySqlDatabase```. If we ever want to change the database to be a MariaDB database or anything else, we would have to change that inside the high-level module ```Foo```, which violates ```DIP```. Instead of doing this, we should abstract the ```database``` variable and build an interface ```IDatabase```.
+
+This is how we can fix our class so we don't violate **DIP**:
+
+```C#
+interface IDatabase{
+}
+class MySqlDatabase : IDatabase{
+}
+class MariaDBDatabase : IDatabase{
+}
+class Foo{
+    private IDatabase database;
+
+    public Foo(IDatabase database){
+        this.database = database;
+    }
+}
+```
+
+In this new example, we are not violating **DIP** since we are using *DI* so that the high-level modules don't directly depend on the low-level modules and we are also making an abstraction.
+
+Here is a picture to summarize *DIP*:
+
+![Dependecy Inversion](AdvancedConceptsInTheObjectOrientedProgramming/SOLID/ScreenshotsForNotes/DependencyInversion.PNG)
+
+
+### Fluent APIs
+
+A Fluent API is an API that produces a *chain effect* with its functions. 
+
+> In software engineering, a fluent interface is an object-oriented API whose design relies extensively on method chaining. Its goal is to increase code legibility.
+
+Here is an example of a class transformed into a fluent API:
+
+```JavaScript
+class TestClass {
+    constructor(a, b){
+        this.a = a;
+        this.b = b;
+    }
+    printA(){
+        console.log(this.a);
+    }
+    printB(){
+        console.log(this.b);
+    }
+}
+
+x = new TestClass(1, 2);
+x.printA();
+x.printB();
+```
+
+In order to transform a normal class into a fluent API you have to return the instance after every method that should be chained with other methods:
+
+```JavaScript
+class TestClass {
+    constructor(a, b){
+        this.a = a;
+        this.b = b;
+    }
+    printA(){
+        console.log(this.a);
+        return this;
+    }
+    printB(){
+        console.log(this.b);
+        return this;
+    }
+}
+
+x = new TestClass(1, 2);
+x
+    .printA()
+    .printB();
+```
+
+### Aspect Oriented Programming
+
+The idea of Aspected Oriented Programming ( AOP ) is to separate cross-cutting aspects like logging, catching, security, transaction management from the functionality of OOP so that we can make code clearer and more modular.
+
+This is the terminology of *AOP*:
+
+* Aspect: this represents a cross-cuting concerns like logging, catching, security, transaction management, etc.
+* Join Point: this is a point during the execution of a program, the execution of a code block, of a method, etc.
+* Advice: this is the action that is taken by an aspect at a specific join point.
+* Pointcut: is a predicate that matches join points.
+
+Here is an image that summarizes the most important AOP terminology:
+
+![AOP Terminology](AdvancedConceptsInTheObjectOrientedProgramming\AspectOrientedProgramming\ScreenshotsForNotes/AopTerminology.JPG)
+
+Here are the most important types of advices:
+
+![Types of advices](AdvancedConceptsInTheObjectOrientedProgramming\AspectOrientedProgramming\ScreenshotsForNotes/TypesOfAdvices.PNG)
