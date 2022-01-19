@@ -2701,7 +2701,7 @@ For example, if you decide to add a method called ```shift()``` to the ```Car```
 
 Here is an image that summarizes *LSP*:
 
-![Liskov Subsitution Principle](AdvancedConceptsInTheObjectOrientedProgramming/SOLID/ScreenshotsForNotes/LiskovSubsitution.PNG)
+![Liskov Subsitution Principle](AdvancedConceptsInTheObjectOrientedProgramming/SOLID/ScreenshotsForNotes/LiskovSubsitution.png)
 
 ### 4. Interface Segregation Principle ( ISP )
 
@@ -2711,7 +2711,7 @@ In our previous example where we were talking about the *LSP*, in order to solve
 
 Here is an image that summarizes *ISP*:
 
-![Interface Segregation Principle](AdvancedConceptsInTheObjectOrientedProgramming/SOLID/ScreenshotsForNotes/InterfaceSegregation.PNG)
+![Interface Segregation Principle](AdvancedConceptsInTheObjectOrientedProgramming/SOLID/ScreenshotsForNotes/InterfaceSegregation.png)
 
 ### 5. Dependency Inversion Principle ( DIP )
 
@@ -2926,8 +2926,8 @@ This is the terminology of *AOP*:
 
 Here is an image that summarizes the most important AOP terminology:
 
-![AOP Terminology](AdvancedConceptsInTheObjectOrientedProgramming\AspectOrientedProgramming\ScreenshotsForNotes/AopTerminology.JPG)
+![AOP Terminology](AdvancedConceptsInTheObjectOrientedProgramming/AspectOrientedProgramming/ScreenshotsForNotes/AopTerminology.JPG)
 
 Here are the most important types of advices:
 
-![Types of advices](AdvancedConceptsInTheObjectOrientedProgramming\AspectOrientedProgramming\ScreenshotsForNotes/TypesOfAdvices.PNG)
+![Types of advices](AdvancedConceptsInTheObjectOrientedProgramming/AspectOrientedProgramming/ScreenshotsForNotes/TypesOfAdvices.PNG)
