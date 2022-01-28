@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="albumapp">
+        <h2>Albums (<span data-bind="text: albums().length"></span>)</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Album Name</th>
+                    <th>Artist</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody data-bind="foreach: albums">
+                <tr>
+                    <td><input type="text" data-bind="value: title"></td>
+                    <td><select data-bind="options: $root.availableArtists, value: artist, optionsText: 'name'"></select></td>
+                    <td><a href="#" data-bind="click: $root.removeAlbum">Remove</a></td>
+                </tr>
+            </tbody>
+        </table>
+        <button data-bind="click: $root.addAlbum">Add another album</button>
+    </div>
+</body>
+</html>
