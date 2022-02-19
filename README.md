@@ -2931,3 +2931,300 @@ Here is an image that summarizes the most important AOP terminology:
 Here are the most important types of advices:
 
 ![Types of advices](AdvancedConceptsInTheObjectOrientedProgramming/AspectOrientedProgramming/ScreenshotsForNotes/TypesOfAdvices.PNG)
+
+## Chapter 8 : The design patterns of the Gang of Four
+
+Following books on this specific topic will come.
+
+## Chapter 9 : Architectural patterns and concepts of modern JavaScript Web Frameworks
+
+### Model View Controller
+
+Here is the MVC Architectural Pattern summarized:
+
+![MVC summarized](ArchitecturalPatternsAndConceptsOfModernJavaScriptWebFrameworks/ScreenshotsForNotes/MVCPattern.PNG)
+
+A user is requiesting a specific page from a server. Based on what URL the user is requesting, the server will send all the request information to a specific controller. The controller is responsible for handling the entire request from the client. It acts as a middle-man between the other 2 Sections ( Model & View ) and should not contain very much code. The first thing that happens when a controller receives a request is to ask the model for information based on the request. The model is responsible for handling all of the data logic of a request. This means that the model interacts with the database and handles all validation, saving, updating, deleting, etc. of the data. The controller should never directly interact with the data logic; it should only ever use the model to perfom this interactions. This means that the controller never has to worry about how to handle the data that it sends and receives and instead only needs to tell the model what to do and respon based on what the model returns. This also means that the model never has to worry about user request and what to do on failure and success. All of that is handled by the controller and the model only cares about interacting with the data. After the model sends its response back to the controller, the controller then needs to interact with the View, to render the data to the user. The View is only concered with how to present the information that the controller sends. This means, the View will be a template file that dynamically renders HTML based on the data that the controller is sending. View will send the final presentation back to the controller and the controller will hanlde sending that presentation back to the user. The important thing to know about this design is that the mode land View ill never interact with each other. Any interactions between the model and the View are done through the controller. Having the controller in between the model and the view means that the presentation of data and the logic of data are completely separated which makes creating complex applications much easier.
+
+There are cases, however, when we are allowed to build a connection between the model and the view:
+
+![MVC with Model View Connection](ArchitecturalPatternsAndConceptsOfModernJavaScriptWebFrameworks/ScreenshotsForNotes/MVC_Model_View_Connection.PNG)
+
+Here is how a practical example of MVC would look like:
+
+![MVC Example](ArchitecturalPatternsAndConceptsOfModernJavaScriptWebFrameworks/ScreenshotsForNotes/MVCExample.JPG)
+
+### Model View Presenter
+
+The Model View Presenter ( MVP ) Pattern pattern is based on the MVC-Pattern but it goes a step further when it comes to decoupling the View from the Model. There are cases in MVC where we might want to connect the View with the Model directly. In this case, the View and the Model are competely decoupled. The communication between the View and the Model happens through the third component: the Presenter. This part of the architecture takes the tasks of the controller component of the MVC pattern and it is also responsible for making sure that the View is updated when the data models are changed. The Presenter component is a direct ( and single ) connector between the View and the Model.
+
+Here is the different in architecture between ( some MVC ) architecture and the MVP architecture:
+
+![MVC & MVP Architecture differences](ArchitecturalPatternsAndConceptsOfModernJavaScriptWebFrameworks/ScreenshotsForNotes/MVP_MVP_ArchitectureDifference.PNG)
+
+### MVC and MVP in Web Applications
+
+When it comes to MVC/MVP in we bapplications we have two differentiate between two types of web applications: classic and modern ones.
+In a classical web application the most part of the application is on the server side. In this case we are talking about a **Thin Client**. However, this is not the case when it comes to modern web applications isnce the majority of the implementation ( especially if we are talking about Single-Page-Applications ) is implemented on the Client. In this case we are talking about a **Thick Client**.
+
+### Classical Web Applications
+
+When it comes to classical web application the three most important components are on server-side.
+
+Let's take a look at the structure of a classical web application:
+
+![Classical Web Application Architecture](ArchitecturalPatternsAndConceptsOfModernJavaScriptWebFrameworks/ScreenshotsForNotes/ClassicalWebApplications.PNG)
+
+The client makes an HTTP-Request from the Browser, that is taken bya Routing-Engine from the server side. The task of the Routing-Engine is to select the right controller to handle the request based on the HTTP-Request. In a classical web application, the routing engine will handle information from Cookies, the URL, Request-Header, Request-Parameters and the HTTP-Request.
+
+The tasks of a controller are to validate the taken data, to update models and to create an HTTP-Response that will be sent to the client. Sometimes, Template-Engines come into play that create HTML templates based on the View-Templates and that are put in the HTTP-Response that is sent back to the client.
+
+The model is represented as an instnace of data sets from a database. Models and Databases are usually used through an ORM-Framework ( Object Relational Mapping ) that allows us to automatically save or read instances of objects from relational databases. The View-Components are usually represented by HTML-Templates.
+
+### Modern Web Applications
+
+Here is how a modern web application would look like using the MVC Architecture Pattern: 
+
+![Modern Web Application Architecture](ArchitecturalPatternsAndConceptsOfModernJavaScriptWebFrameworks/ScreenshotsForNotes/ModernWebApplications.PNG)
+
+In modern web applications, as previously mentioned, the majorty of the implementation of the application is on the client side. That means that the implementations of the Routing and Templating Engines should be for example, on the client side.
+
+As you can see from the architecture above, there are some differences between a classical- and a modern web application.
+
+The Routing-Engine has nothing to do with HTTP-Requests anymore.
+
+### Model View ViewModel
+
+The MVVM ( Model View ViewModel ) architecture pattern is a variant of the MVC- and MVP-Architecture patterns. 
+
+In this architecture, just like in MVC and MVP we have a View-Component and a Model-Component. In this architecture pattern the goal is the decoupling of the View- and Model-Component through the so-called View-Model component. The View-Model Component can also be seen as the Cotnroller-Component, or as an abstraction of the View-Component.
+
+The idea behind it is to create data fields for every dynamic ui-element inside the ViewModel that are coupled to the View-component through bidirectional data-binding.
+If a user changes the value of a ui-element, the data field in the view model will be automatically updated.
+
+An example of MVVM:
+
+![MVVM Architecture Pattern](ArchitecturalPatternsAndConceptsOfModernJavaScriptWebFrameworks/ScreenshotsForNotes/MVVMPattern.PNG)
+
+Since every View-Element has its equivalent in the ViewModel, it is possible to store ui-relevant logic in seperate services. An advantage of that is that the logic can be tested without while being independent of the View.
+
+### Component based architecture
+
+Here is the difference between a component based architecture and the MVC Architecture:
+
+![Architecture difference between MVC and Component Based architectures](ArchitecturalPatternsAndConceptsOfModernJavaScriptWebFrameworks/ScreenshotsForNotes/MVC_ComponentBased_ArchitectureDifference.PNG)
+
+
+The idea behind component based architecture ( CBA ) is to divide a web application across multiple components.
+An MV* architecture is divided horizontally, while a component based architecture is divided vertically. Every single component is independent and it contains application code as well as UI-Code. 
+
+In the best case scenario, components should be built in such a way that they can be reused across multiple applications: 
+
+
+![Reusability of components across applications](ArchitecturalPatternsAndConceptsOfModernJavaScriptWebFrameworks/ScreenshotsForNotes/ReusabilityOfComponentsAcrossApplications.PNG)
+
+### Routing
+
+The *Routing* term means that building mappings between certain URLs and certain actions/controllers.
+
+An example of how server-side routing looks like:
+
+![Reusability of components across applications](ArchitecturalPatternsAndConceptsOfModernJavaScriptWebFrameworks/ScreenshotsForNotes/ServerSideRouting.PNG)
+
+For a long time, in order to change the look of the application inside an SPA, you had to use **hash-fragments**. These were basically links ( anchors ) to certain elements. The idea behind **Hashbang-URLs** was to represents certain states of the application through *hash-fragments*.
+
+Two different states of the program could be represented by hashbang-URLs like this:
+
+* ```http://www.example.com/index.html#login```
+* ```http://www.example.com/index.html#settings```
+
+These hashbang URLS are handled by javascript.
+The history-API can also be used to build SPAs.
+
+## Chapter 10 : Messaging
+
+Messagin-systems and messaging-brokers help us avoid coupling components with each other when it comes to implementing complex software systems where we have multiple components or/and applications that must interact together.
+
+### Introduction
+
+Instead of having components communicating with each other directly by strongly coupling the components:
+
+![Strongly Coupled Components](Messaging/ScreenshotsForNotes/StronglyCoupledComponents.PNG)
+
+it would be a lot cleaner to implement lose coupling via a message-system:
+
+![Strongly Coupled Components](Messaging/ScreenshotsForNotes/LooslyCoupledComponentsThroughAMessagingSystemArchitecture.PNG)
+
+### AMQP
+
+AMQP ( **Advanced Messaging Queuing Protocol** ) is a protocol for the exchange of messages.
+Here is how messages are sent using AMQP:
+
+![AMQP Complete Architecture](Messaging/ScreenshotsForNotes/AMQP_Complete_Architecture.PNG)
+
+|Term|Description|
+|----|-----------|
+|```Producer/Publisher```|Components that send messages to the messaging-system|
+|```Consumer/Subscriber```|Components that receive messages from the messaging-system|
+|```Queue```|Message Storage that stores messages using the FIFO principle ( Queue data structure )|
+|```Message```|Data that is setn from the Producer to the Consumer across the messaging-system|
+|```Connection```|The TCP connection between an application and the messaging-system|
+|```Channel```|virtual connection inside a connection|
+|```Exchange```|Message distributor that takes the messages from the producer and forwards them based on some special criteria|
+|```Binding```|Connection between Queue and Exchange|
+|```Routing Key```|This is a key used by the Exhange in order to decide to which queue to forward the message to|
+
+#### Producer and Consumer
+
+A *Producer* or *Publisher* are the components that send messages to the messaging-system. On ther other side we can find the *Consumer* or *Subscriber*, which are the components that receive those messages.
+Producers send messages to the Exchanges ( there are more types of Exchanges ) that are responsible for forwarding messages to Message-Queues ( the queues are bounded with the exchanges, we call those message-bindings ). Subscribers can then take the message from the Queues.
+
+The principle of message queues:
+
+![The principle of message queues](Messaging/ScreenshotsForNotes/MessageQueuePrinciple.PNG)
+
+Producers and Consumers ***must*** create a TCP connection with the messaging system before trying to send/receive messages. In order to connect to Exchanges or Queues, virtual Connection inside the TCP connection, called Channels will be build.
+
+#### Exchanges
+
+There are 4 types of exhanges: *Direct Exhange*, *Fanout Exhange*, *Topic Exchange*, *Headers Exchange*. There are a lot of plugin interfaces that enable you to build your own *Custom Exchanges*.
+
+*Fanout Exchanges*
+
+The easiest type of Exchange is the *Fanout Exchange*. When using this type of exchange, the messages are sent to all the queues that are connected to this exchange. A typical application of this type of exchange would be when one or more components register themselves for some type of Event and they will be notified.
+
+This is the principle of fanout exchanges:
+
+![Fanout Exchange Principle](Messaging/ScreenshotsForNotes/FanoutExchangePrinciple.PNG)
+
+*Direct Exchanges*
+
+When it comes to direct exchanges, the sender will send its message with a routing key. The routing key will be used by the exchange in order to decide which destination will receive the message. Only when the routing key, that is sent along with the message, matches one of the routing keys of the message bindings ( a binding between the exchange and the msessage queues ), only then will it be sent to that specific message queue.
+
+This is the principle of direct exchanges:
+
+![Direct Exchange Principle](Messaging/ScreenshotsForNotes/DirectExchangePrinciple.PNG)
+
+*Topic Exchanges*
+
+A more flexible version of *Direct Exchanges* are *Topic Exchanges*. Topic exchanges, just like direct exchanges use routing keys in order to determine to what message queues messages will be sent to based on asserting the routing key of the message with the routing keys from the message bindings.
+
+The difference between *Topic Exchanges* and *Direct Exchanges* is that you can define *Wildcards*/*Routing Patterns* when using *Topic Exchanges*.
+
+This is the principle of topic exchanges:
+
+![Topic Exchange Principle](Messaging/ScreenshotsForNotes/TopicExchangePrinciple.PNG)
+
+*Header Exchange*
+
+Header exchanges are the most flexilbe Exchanges of all. The routing doesn't happen over a routing key, it is based on header-information that is sent with the messages. Header Exchanges are always the right ones when you want to base your routing on multiple parameters without bringing.
+
+This is the principle of header exchanges:
+
+![Header Exchange Principle](Messaging/ScreenshotsForNotes/HeaderExchangePrinciple.PNG)
+
+#### AMQP in JavaScript
+
+You can use AMQP with JavaScript and there are some client libraries that can help you with that. You will need a message broker that supports AMQP.
+
+#### Installing Message-Brokers for AMQP
+
+The most well-known message-brokers for AMQP is *RabbitMQ* and can also be used with Docker.
+
+#### Roud-Robin
+
+In programming, a **Round-Robin** is a scheduling strategy where we offer resources to processes in a consecutive manner for a short period of time. If we have 3 processes P1, P2 and P3 then the sequence will look like this: P1, P2, P3, P1, P2, P3, P1, P2 etc. **Round-Robin* can also be used in messaging-systems with consumers when using a direct exchange for example where the first message will be sent to consumer C1, the second one will be sent to the consumer C2, the third one will be sent to the consumer C3, the fourth one will be sent to the consumer C1 again, and so on.
+
+### STOMP
+
+If you want to gain access to RabbitMQ from the browser you can use the **STOMP ( Streaming Text Oriented Message Protocol )** protocol which is a text-based HTTP-like protocol that was conceived for messaging-systems and that is also supported by RabbitMQ through a [special plugin](https://www.rabbitmq.com/stomp.html).
+
+There are also libraries like *stom-websocket* or *webstomp-client* that enable you to use **STOMP** with Web-Sockets.
+
+### MQTT
+
+**MQTT ( Message Queue Telemtry Transport )** is a messaging protocol that is mostly used in the realm of Internet of Things. The MQTT protocol was developed with the idea in mind that it should also work in networks with high latency and small bandwith.
+
+These requirements are met by MQTT through the following properties:
+
+* **Lightweight**: Even devices that have minimal resources can use MQTT.
+* **Different QoS**: In order for MQTT to work in networks with high latency and small bandwith there are a couple qualities of service that you can choose ( ***QoS*** stands for ***Quality of Service*** ). Depending on the stability of your network you can choose between ***3 different QoS-Level***.
+* **Efficient Transmission**: Data is transmitted in binary format and that is how MQTT works in bad networks.
+* **Session-Awareness**: If MQTT is used in a network that has a lot of connection terminations then the messages that weren't sent because of those terminations will be saved and resent when the connection is up again.
+* **Data Diagnostics**: MQTT can send data of different types ( e.g. Text, Binary data or Object messages )
+
+#### Publish-Subscribe and Topics
+
+MQTT implements the Publish-Subscribe Messaging Pattern. Publishers send the messages. One or more subscribers receives the messages. Publishers and subscribers don't communicate directly with each other, they are decoupled through a Broker ( in this case an MQTT-Broker ). The task of the broker is to make sure that messages are sent to the right subscribers and that the right subscribers receive the messages.
+
+Here is the workflow of MQTT:
+
+![MQTT Workflow](Messaging/ScreenshotsForNotes/MQTTWorkflow.PNG)
+
+Topic in MQTT are basically strings that look like URLs and that are build in a certain hierarchy. Subscribers register to the broker for certain topics, topics that they're interested in. When the broker receives a message for a certain topic, the message will then be forwarded to all the subscribers that are interested in that topic.
+
+Here is how topics can look like in MQTT:
+
+![Topics in MQTT](Messaging/ScreenshotsForNotes/TopicsInMQTT.PNG)
+
+#### Wildcards
+
+Topics can also be defined using Wildcards. For example, the wildcard ```home/#``` will inform all the subscribers that are subscribed to topics that start with ```home/```. You don't only have to use wildcards at the end of topic-strings. You can use them wherever you want : ```home/#/garage```.
+
+The Wildcard ```#``` is basically a placeholder for one or more topics. For example the topic ```home/#/lightSensor``` is valid for ```home/garage/lightSensor``` as well as for ```home/groundfloor/bathroom/lightSensor```. 
+
+The Wildcard ```+``` is a placeholder for only one topic. For example ```home/+/lightSensor``` is valid for ```home/garage/lightSensor``` but not for ```home/groundfloor/bathroom/lightSensor```. The ```+``` can only be a placeholder for one single topic while the ```#``` can be a placeholder for one or more topics.
+
+#### Quality of Service
+
+As previously mentioned, there are more levels when it comes to the QoS:
+
+* ***Level 0:*** At this level there is no guarantee that a message will be received by the Subscribers: 
+
+![Quality of Service 0](Messaging/ScreenshotsForNotes/QoS0.PNG)
+
+* ***Level 1:*** This level of service guarantees that the message will at least be received once. The publisher of the message saves the message until it receives a confirmation ( *PUBACK* ) from the receiver/consumer/subscriber that it has been received. If this doesn't happen in a specific period of time, the message will be sent again:
+
+![Quality of Service 1](Messaging/ScreenshotsForNotes/QoS1.PNG)
+
+* ***Level 2:*** This level guarantess a multi-level communication between the sender and the receiver. It guarantess that a message will be received.
+
+![Quality of Service 2](Messaging/ScreenshotsForNotes/QoS2.PNG)
+
+The higher the QoS, the better the bandwidth must be:
+
+|QoS Level|Number of delivered messages|Guarantee of confirmed received messages|
+|---|---|---|
+|0|at most once|no guarantee|
+|1|at leasts once|Confirmed received message, duplicates are possible|
+|2|Only once|Confirmed received message, duplicates are not possible|
+
+#### Last Will and Testament
+
+Another feature of MQTT is the ***Last Will and Testament ( LWT )*** which enables a client to send a message other clients when the connection is cancelled.
+
+#### Retained messages
+
+*Retained Messages* are messages that are saved for a certain topic by the MQTT-Broker and sent to all the subscribers, even if they haven't been subscribed to that topic yet.
+
+For example, if we have a topic called ```/home/garage/temperatureSensor``` that calculates the temperature in the room every hour and sends it to all subscribers, we can make that message a *Retained Message* and when a new subscriber subscribes to that topic, it will receive all the other messages even if it hasn't been subscribed yet.
+
+### Persistent Sessions
+
+Persistent Sessions are another feature of MQTT and they are very useful when the connections are terminated very often. When a connection of a client is terminated with the MQTT-Broker, the messages that were supposed to go to that client are saved in that persistent session and when the client reconnects, it will receive all the messages that were sent while it was deconnected.
+
+### Installing Message-Brokers for MQTT
+
+The best MQTT-Brokers are:
+
+* HiveMQ
+* Mosquitto
+* Moquette
+* RabbitMQ
+* ActiveMQ
+
+MQTT can also run on a docker container.
+
+## Chapter 11 : Continuous Integration
+
+Following books on this specific topic.
